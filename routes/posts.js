@@ -1,9 +1,9 @@
 const router = require('express').Router()
-const {getTimelinePostsController, getPostsController, getPostController, postPostController, updatePostController, 
-deletePostController, likePostController} = require('../controllers/posts')
+const {getTimelinePostsController, getPostsController, getPostController, postPostController, sharePostController,
+	updatePostController, deletePostController, likePostController} = require('../controllers/posts')
 
 
-//GETALL  POSTS
+//GET TIMELINE POSTS
 router.get('/:userId/:username', getTimelinePostsController)
 //GET USER POSTS
 router.get('/:id/:username', getPostsController)
@@ -11,6 +11,8 @@ router.get('/:id/:username', getPostsController)
 router.get('/:id/:userId/:username', getPostController)
 //CREATE A POST
 router.post('/', postPostController)
+//SHARE A POST
+router.post('/:postId/:posterId/:sharerId/:sharerUsername', sharePostController)
 //UPDATE A POST
 router.patch('/:id', updatePostController)
 //DELETE A POST

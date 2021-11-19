@@ -13,6 +13,18 @@ const postSchema = mongoose.Schema({
         type : String,
         max : 500
     },
+    sharerId : {
+        type : String,
+        required : true,
+    },
+    sharerUsername : {
+        type : String,
+        required : true,
+    },
+    sharerDescription : {
+        type : String,
+        max : 500
+    },
     img : {
         type : String,
     },

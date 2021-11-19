@@ -55,6 +55,24 @@ const postPostController = async(req, res)=>{
     } 
 }
 
+//CREATE SHARE POST
+const sharePostController = async(req, res)=>{
+    const {postId, posterId, sharerId, sharerUsername} = req.params
+    // const {userId, username : userUsername} = req.body
+    try{
+        const foundPost = await Post.findOne({_id : postId})
+        //const foundPost = await Post.findOne({_id : postId, userId : posterId, sharerId : sharerId, sharerUsername : sharerUsername })
+        if(foundPost){
+            const sharedPost =await  Post.create(req.body)
+            res.status(200).json({response : "Success", data : sharedPost})
+        }else{
+            res.status(200).json({response : "Error", message : "Post not found"})
+        }
+    }catch(error){
+         res.status(500).json({error : "An error occured creating post"})
+    } 
+}
+
 //UPDATE POST
 const updatePostController = async(req,res)=>{
     const {id} = req.params
@@ -116,5 +134,6 @@ const likePostController = async(req, res)=>{
     }
 }
 
-module.exports = {getTimelinePostsController, getPostsController, getPostController, postPostController, updatePostController, 
-deletePostController, likePostController}
+
+module.exports = {getTimelinePostsController, getPostsController, getPostController, postPostController, sharePostController,
+    updatePostController, deletePostController, likePostController}
