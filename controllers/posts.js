@@ -16,7 +16,7 @@ const getTimelinePostsController = async(req, res)=>{
         const allPosts = usersPosts.concat(friendsPosts)
         res.status(200).json({response : "Success", data : allPosts})
     }catch(error){
-        res.status(500).json({error : "An error occured fetchimg posts"})
+        res.status(200).json({response : "Fail", message : "An error occured fetchimg posts"})
     }
 }
 
@@ -29,7 +29,7 @@ const getPostsController = async(req, res)=>{
 
        res.status(200).json({response : "Success", count : fetchedPosts.length, data : fetchedPosts})
     }catch(error){
-        res.status(500).json({error : "An error occured fetchimg posts"})
+        res.status(200).json({response : "Fail", message : "An error occured fetchimg posts"})
     }
 }
 
@@ -40,18 +40,20 @@ const getPostController = async(req, res)=>{
         const fetchedPost = await Post.findOne({_id : id, userId : userId, username : username})
         res.status(200).json({response : "Success", data : fetchedPost})
     } catch (error) {
-        res.status(500).json({error : "An error occured fetchimg post."})
+        res.status(200).json({response : "Fail", message : "An error occured fetchimg post."})
     }
 }
 
+
 //CREATE POST
 const postPostController = async(req, res)=>{
-    const {userId, username : userUsername} = req.body
+    // const {userId, username : userUsername} = req.body
+   
     try{
         const newPost =await  Post.create(req.body)
         res.status(200).json({response : "Success", data : newPost})
     }catch(error){
-         res.status(500).json({error : "An error occured creating post"})
+         res.status(200).json({response : "Fail", message : "An error occured creating post"})
     } 
 }
 
@@ -66,10 +68,10 @@ const sharePostController = async(req, res)=>{
             const sharedPost =await  Post.create(req.body)
             res.status(200).json({response : "Success", data : sharedPost})
         }else{
-            res.status(200).json({response : "Error", message : "Post not found"})
+            res.status(200).json({response : "Fail", message : "Post not found"})
         }
     }catch(error){
-         res.status(500).json({error : "An error occured creating post"})
+         res.status(200).json({response : "Fail", message : "An error occured creating post"})
     } 
 }
 
@@ -86,12 +88,12 @@ const updatePostController = async(req,res)=>{
             runValidators : true,
             new : true
         })
-         res.status(200).json({response : "Updated", data : postUpdate})
+         res.status(200).json({response : "Success", data : postUpdate})
          }else{
-             return res.status(500).json({message : 'You can only update your own post.'})
+             return res.status(200).json({response : "Fail", message : 'Action not allowed'})
          }
     }catch(error){
-        res.status(500).json({error : "An error occured updating post"})
+        res.status(200).json({response : "Fail", message : "An error occured updating post"})
     } 
 }
 
@@ -105,13 +107,13 @@ const deletePostController = async(req,res)=>{
         
          if(deletePost.userId === userId  && deletePost.username === userUsername){    
             const postDelete = await  Post.findOneAndDelete({userId : userId, _id : id })
-            return res.status(200).json({response : "Deleted", data : postDelete})
+            return res.status(200).json({response : "Success", data : postDelete})
          }else{
-             return res.status(500).json({message : 'You can only delete your own post.'})
+             return res.status(200).json({response : "Fail", message : 'Action not allowed'})
          }
 
     }catch(error){
-        res.status(500).json({error : "An error occured deleting post"})
+        res.status(200).json({response : "Fail", message : "An error occured deleting post"})
     } 
 }
 
@@ -124,13 +126,13 @@ const likePostController = async(req, res)=>{
         
         if(liked === false){
             const likedPost = await post.updateOne({$push : {likes : userId}})
-            return res.status(200).json({response : "Liked", data : likedPost})
+            return res.status(200).json({response : "Success", data : likedPost})
         }else{
             const unlikedPost = await post.updateOne({$pull : {likes : userId}})
-            return res.status(200).json({response : "Unliked", data : unlikedPost})
+            return res.status(200).json({response : "Success", data : unlikedPost})
         }
     } catch (error) {
-        res.status(500).json({error : "An error occured liking post"})
+        res.status(200).json({response : "Fail", message : "An error occured liking post"})
     }
 }
 

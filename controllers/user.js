@@ -5,9 +5,9 @@ const bcrypt = require('bcrypt')
 const getUsers = async(req, res)=>{
     try{ 
      const usersData = await User.find({})
-     return res.status(200).json({Count: usersData.length ,usersData})
+     return res.status(200).json({response : "Success", count: usersData.length ,usersData})
      }catch(error){
-         res.status(500).json({error : "An error occured fetching users"})
+         res.status(200).json({response : "Fail", message : "An error occured fetching users"})
      }
  }
  
@@ -18,9 +18,10 @@ const getUser = async(req,res)=>{
         const userData = await User.findOne({_id : id , username : username}).select({password : 0})
         res.status(200).json({response : "Success", data : userData})
     }catch(error){
-        return res.status(500).json({message : 'An error occuered fetching your account.'})
+        return res.status(200).json({response : "Fail", message : 'An error occuered fetching your account'})
     }
 }
+
 //UPDATE
 const updateUser = async(req, res)=>{
     const {id, username} = req.params
@@ -32,18 +33,18 @@ const updateUser = async(req, res)=>{
             }
             const userData = await User.findOne({_id : id, username : username})
             if(!userData){
-                return res.status(200).json({message : 'User with given id or username not found.'})
+                return res.status(200).json({response : "Fail", message : 'User with given id or username not found'})
             }
             const userUpdate = await User.findOneAndUpdate({_id : id}, req.body, {
                 runValidators : true,
                 new : true
             })
-            res.status(200).json({message : "Updated",userUpdate})
+            res.status(200).json({response : "Success", message : userUpdate})
         }catch(error){
-            res.status(500).json({error})
+            res.status(200).json({response : "Fail", message: "An error occured updating your account"})
         }
     }else{
-        return res.status(500).json({message : 'You can only update your own account.'})
+        return res.status(200).json({response : "Fail", message : 'Action not allowed'})
     }
 }
 
@@ -55,15 +56,15 @@ const deleteUser = async(req, res)=>{
         try{ 
             const userData = await User.findOne({_id : id, username : username})
             if(!userData){
-                return res.status(200).json({message : 'User with given id or username not found.'})
+                return res.status(200).json({response : "Fail", message : 'User with given id or username not found.'})
             }
             const userdeleted = await User.findOneAndDelete({_id : id})
-            res.status(200).json({message : "Deleted",userdeleted})
+            res.status(200).json({response : "Success", message : userdeleted})
         }catch(error){
-            res.status(500).json({error})
+            res.status(200).json({error})
      }
     }else{
-        return res.status(500).json({message : 'You can only delete your own account.'})
+        return res.status(200).json({response : "Fail", message : 'Action not allowed'})
     }
 
 }
@@ -74,26 +75,26 @@ const followUser = async(req, res)=>{
     const {userId, username : userUsername} = req.body
     try{
         if(userId === id){
-            return res.status(500).json({message : 'You cannot follow your own account.'})
+            return res.status(200).json({response : "Fail", message : 'Action not allowed'})
         }else{
             const user = await User.findOne({_id : id, username : username})
             const currentUser = await User.findOne({_id : userId, username : userUsername})
             
             if(!user || !currentUser){
-                return res.status(500).json({message : 'User not found. Please try again."'})
+                return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
             }else{
                 if(!user.followers.includes(req.body.userId)){
                     await user.updateOne({$push : {followers : req.body.userId}})
                     await currentUser.updateOne({$push : {followings : req.params.id}})
-                    res.status(200).json({response : "Followed"})
+                    res.status(200).json({response : "Success",  data : currentUser})
                 }else{
-                    return res.status(500).json({message : 'You already follow this user."'})
+                    return res.status(200).json({response : "Fail", message : 'You already follow this user"'})
                 }
 
             }
         }
     }catch(error){
-        return res.status(500).json({message : 'An error occured.'})
+        return res.status(200).json({response : "Fail", message : 'An error occured'})
     }
 }
 
@@ -103,25 +104,25 @@ const unfollowUser = async(req,res)=>{
     const {userId, userUsername} = req.body
     try{
         if(userId === id){
-            return res.status(500).json({message : 'You cannot unfollow your own account.'})
+            return res.status(200).json({message : 'Action not allowed'})
         }else{
             const user = await User.findOne({_id : id, username : username})
             const currentUser =await  User.findOne({_id : userId, username : userUsername})
             if(!user || !currentUser){
-                return res.status(500).json({message : 'User not found. Please try again.'})
+                return res.status(200).json({message : 'User not found. Please try again'})
             }else{
                 if(user.followers.includes(req.body.userId)){
                     await user.updateOne({$pull : {followers : req.body.userId}})
                     await currentUser.updateOne({$pull : {followings : req.params.id}})
-                    return res.status(200).json({response : "Unfollowed"})
+                    return res.status(200).json({response : "Success", data : currentUser})
                 }else{
-                    return res.status(500).json({message : 'You do not follow this user.'})
+                    return res.status(200).json({message : 'You do not follow this user'})
                 }
             }
          }
         t
     }catch(error){
-        return res.status(500).json({message : 'An error occured.'})
+        return res.status(200).json({response : "Fail", message : 'An error occured'})
     }
 }
 
