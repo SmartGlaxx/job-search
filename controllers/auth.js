@@ -8,7 +8,7 @@ const registerUser = async(req, res, next)=>{
     const password = req.body.password
    try{ 
         if(password.length < 8){
-            return res.status(200).json({response: "Fail", message : "Password cannot be less than 8 characters."})
+            return res.status(200).json({response: "Fail", message : "Password cannot be less than 8 characters"})
         }else{
             const salt = await bcrypt.genSalt(10)
             const hashedPasword = await bcrypt.hash(password, salt)
@@ -23,7 +23,7 @@ const registerUser = async(req, res, next)=>{
 
         }
     }catch(error){
-        res.status(200).json({response : "Fail", message : "An error occured. Please try again."})
+        res.status(200).json({response : "Fail", message : "An error occured. Please try again"})
     }
 }
 
@@ -43,15 +43,15 @@ const loginUser = async(req, res)=>{
     if((checkedEmail === emailOrUsername) || (checkedUsername === emailOrUsername)){
         const checkedPassword = await bcrypt.compare(password, storedPassword)
         if(!checkedPassword){
-            return res.status(200).json({response : "Fail", message : "Password Incorrect."})
+            return res.status(200).json({response : "Fail", message : "Password Incorrect"})
         }
         return res.status(200).json({response : "Success", data : loginData})
     }else{
-        return res.status(200).json({response: "Fail", message : "Email or Username not found in our database. Please try again."})
+        return res.status(200).json({response: "Fail", message : "Email or Username not found in our database. Please try again"})
     }
     
     }catch(error){
-        res.status(200).json({response: "Fail", message : "User or Username not found. Please try again."})
+        res.status(200).json({response: "Fail", message : "User or Username not found. Please try again"})
     }
 }
 
