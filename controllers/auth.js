@@ -51,7 +51,7 @@ const loginUser = async(req, res)=>{
     }
     
     }catch(error){
-        res.status(404).json({error : "User or Username not found. Please try again."})
+        res.status(404).json({response : "User or Username not found. Please try again."})
     }
 }
 
