@@ -23,7 +23,7 @@ const registerUser = async(req, res, next)=>{
 
         }
     }catch(error){
-        res.status(500).json({response : "An error occured. Please try again."})
+        res.status(200).json({response : "An error occured. Please try again."})
     }
 }
 
@@ -51,7 +51,7 @@ const loginUser = async(req, res)=>{
     }
     
     }catch(error){
-        res.status(404).json({response : "User or Username not found. Please try again."})
+        res.status(200).json({response : "User or Username not found. Please try again."})
     }
 }
 
