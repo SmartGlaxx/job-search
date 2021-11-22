@@ -9,12 +9,12 @@ const getAllCommentsController = async(req, res)=>{
 		const foundPost = await Post.findOne({_id : id})
 		if(foundPost){
 			const postComments =await  Comment.find({postId : id, userId : userId , username : username}).select('comment createdAt')
-	        res.status(200).json({response : "Success", data : postComments})
+	        res.status(200).json({response : "Success", count : postComments.length, data : postComments})
 		}else{
-			res.status(200).json({response : "Error", message : "Post not found"})
+			res.status(200).json({response : "Fail", message : "Post not found"})
 		}
 	}catch(error){
-		res.status(500).json({error : "An error occured fetching comment"})
+		res.status(200).json({response : "Fail", message : "An error occured fetching comment"})
 	}
 }
 const postCommentController = async(req, res)=>{
@@ -26,10 +26,10 @@ const postCommentController = async(req, res)=>{
 			const newComment =await  Comment.create(req.body)
 	        res.status(200).json({response : "Success", data : newComment})
 		}else{
-			res.status(200).json({response : "Error", message : "Post not found"})
+			res.status(200).json({response : "Fail", message : "Post not found"})
 		}
     }catch(error){
-         res.status(500).json({error : "An error occured creating comment"})
+         res.status(200).json({response : "Fail", message : "An error occured creating comment"})
     } 
 }
 
@@ -44,12 +44,12 @@ const updateCommentController = async(req, res)=>{
 				runValidators : true,
             	new : true
 			})
-	        res.status(200).json({response : "Updated", data : updatedComment})
+	        res.status(200).json({response : "Success", data : updatedComment})
 		}else{
 			res.status(200).json({response : "Error", message : "Post not found"})
 		}
     }catch(error){
-         res.status(500).json({error : "An error occured updating comment"})
+         res.status(200).json({response : "Fail", message : "An error occured updating comment"})
     } 
 }
 const deleteCommentController = async(req, res)=>{
@@ -60,12 +60,12 @@ const deleteCommentController = async(req, res)=>{
 		
 		if(foundComment){
 			const deletedComment = await  Comment.findOneAndDelete({_id : commentId, postId : postId, userId : userId})
-	        res.status(200).json({response : "Deleted", data : deletedComment})
+	        res.status(200).json({response : "Success", data : deletedComment})
 		}else{
-			res.status(200).json({response : "Error", message : "Post not found"})
+			res.status(200).json({response : "Fail", message : "Post not found"})
 		}
     }catch(error){
-         res.status(500).json({error : "An error occured deleting comment"})
+         res.status(200).json({response : "Fail", message : "An error occured deleting comment"})
     } 
 
 }
