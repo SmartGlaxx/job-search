@@ -13,7 +13,8 @@ const getTimelinePostsController = async(req, res)=>{
                return Post.find({userId : friendsId})
             })
         )
-        const allPosts = usersPosts.concat(friendsPosts)
+        const flatFriendsPosts = friendsPosts.flat()
+        const allPosts = [...usersPosts, ...flatFriendsPosts]
         res.status(200).json({response : "Success", data : allPosts})
     }catch(error){
         res.status(200).json({response : "Fail", message : "An error occured fetchimg posts"})
