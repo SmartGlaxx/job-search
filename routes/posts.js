@@ -4,7 +4,7 @@ const {getTimelinePostsController, getPostsController, getPostController, postPo
 
 
 //GET TIMELINE POSTS
-router.get('/:userId/:username', getTimelinePostsController)
+router.get('/:userId/:username/timeline', getTimelinePostsController)
 //GET USER POSTS
 router.get('/:id/:username', getPostsController)
 //GET A POST
