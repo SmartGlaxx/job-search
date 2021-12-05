@@ -8,7 +8,7 @@ const getAllCommentsController = async(req, res)=>{
 	try{
 		const foundPost = await Post.findOne({_id : id})
 		if(foundPost){
-			const postComments =await  Comment.find({postId : id, userId : userId , username : username}).select('comment createdAt')
+			const postComments =await  Comment.find({postId : id, userId : userId , username : username})
 	        res.status(200).json({response : "Success", count : postComments.length, data : postComments})
 		}else{
 			res.status(200).json({response : "Fail", message : "Post not found"})
