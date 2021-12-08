@@ -4,7 +4,7 @@ const {getAllCommentsController, postCommentController, updateCommentController,
 
 
 //GET ALL COMMENTS
-router.get('/:id/:userId/:username', getAllCommentsController)
+router.get('/:id', getAllCommentsController)
 //CREATE A COMMENT
 router.post('/:id/:userId/:username', postCommentController)
 //UPDATE A COMMENT
