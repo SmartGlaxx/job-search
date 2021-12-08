@@ -10,6 +10,6 @@ router.post('/:id/:userId/:username', postCommentController)
 //UPDATE A COMMENT
 router.patch('/:postId/:posterId/:userId/:commentId', updateCommentController)
 //DELETE A COMMENT
-router.delete('/:postId/:posterId/:userId/:commentId', deleteCommentController)
+router.delete('/:postId/:commentId', deleteCommentController)
 
 module.exports = router
