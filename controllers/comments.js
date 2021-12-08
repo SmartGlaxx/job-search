@@ -53,13 +53,13 @@ const updateCommentController = async(req, res)=>{
     } 
 }
 const deleteCommentController = async(req, res)=>{
-	const {postId, posterId, userId, commentId} = req.params
+	const {postId, commentId} = req.params
 	try{
-		const foundPost = await Post.findOne({_id : postId, userId : posterId})
-		const foundComment = await Comment.findOne({_id : commentId, userId : userId})
+		const foundPost = await Post.findOne({_id : postId})
+		const foundComment = await Comment.findOne({_id : commentId})
 		
 		if(foundComment){
-			const deletedComment = await  Comment.findOneAndDelete({_id : commentId, postId : postId, userId : userId})
+			const deletedComment = await  Comment.findOneAndDelete({_id : commentId, postId : postId})
 	        res.status(200).json({response : "Success", data : deletedComment})
 		}else{
 			res.status(200).json({response : "Fail", message : "Post not found"})
