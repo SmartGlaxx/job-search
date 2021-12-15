@@ -35,16 +35,21 @@ const postCommentController = async(req, res)=>{
 
 const updateCommentController = async(req, res)=>{
 	const {postId, commentId} = req.params
+	const {userId, username} = req.body
 	try{
 		const foundPost = await Post.findOne({_id : postId})
 		const foundComment = await Comment.findOne({_id : commentId})
 		
 		if(foundPost && foundComment){
-			const updatedComment =await  Comment.findOneAndUpdate({_id : commentId, postId : postId},req.body,{
+			if(foundComment.userId == userId && foundComment.username == username){
+				const updatedComment =await  Comment.findOneAndUpdate({_id : commentId, postId : postId},req.body,{
 				runValidators : true,
             	new : true
 			})
 	        res.status(200).json({response : "Success", updatedComment})
+			}else{
+				res.status(200).json({response : "Error", message : "Action not allowed"})
+			}
 		}else{
 			res.status(200).json({response : "Error", message : "Post not found"})
 		}
@@ -52,15 +57,22 @@ const updateCommentController = async(req, res)=>{
          res.status(200).json({response : "Fail", message : "An error occured updating comment"})
     } 
 }
+
+
 const deleteCommentController = async(req, res)=>{
 	const {postId, commentId} = req.params
+	const {userId, username} = req.body
 	try{
 		const foundPost = await Post.findOne({_id : postId})
 		const foundComment = await Comment.findOne({_id : commentId})
 		
 		if(foundPost && foundComment){
-			const deletedComment = await  Comment.findOneAndDelete({_id : commentId, postId : postId})
-	        res.status(200).json({response : "Success", deletedComment})
+			if(foundComment.userId == userId && foundComment.username == username){
+				const deletedComment = await  Comment.findOneAndDelete({_id : commentId, postId : postId})
+	        	res.status(200).json({response : "Success", deletedComment})
+			}else{
+				res.status(200).json({response : "Error", message : "Action not allowed"})
+			}
 		}else{
 			res.status(200).json({response : "Fail", message : "Post not found"})
 		}
