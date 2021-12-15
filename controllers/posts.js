@@ -60,14 +60,15 @@ const postPostController = async(req, res)=>{
 
 //CREATE SHARE POST
 const sharePostController = async(req, res)=>{
-    const {postId, posterId, sharerId, sharerUsername} = req.params
+    const {postId, posterId, posterUsername} = req.params
+    // const {sharerId, sharerUsername} = req.body
     // const {userId, username : userUsername} = req.body
     try{
-        const foundPost = await Post.findOne({_id : postId})
+        const foundPost = await Post.findOne({_id : postId, userId : posterId, username : posterUsername})
         //const foundPost = await Post.findOne({_id : postId, userId : posterId, sharerId : sharerId, sharerUsername : sharerUsername })
         if(foundPost){
             const sharedPost =await  Post.create(req.body)
-            res.status(200).json({response : "Success", data : sharedPost})
+            res.status(200).json({response : "Success", sharedPost})
         }else{
             res.status(200).json({response : "Fail", message : "Post not found"})
         }
