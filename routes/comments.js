@@ -8,7 +8,7 @@ router.get('/:id', getAllCommentsController)
 //CREATE A COMMENT
 router.post('/:id/:userId/:username', postCommentController)
 //UPDATE A COMMENT
-router.patch('/:postId/:posterId/:userId/:commentId', updateCommentController)
+router.patch('/:postId/:commentId', updateCommentController)
 //DELETE A COMMENT
 router.delete('/:postId/:commentId', deleteCommentController)
 
