@@ -9,7 +9,7 @@ const getAllCommentsController = async(req, res)=>{
 		const foundPost = await Post.findOne({_id : id})
 		if(foundPost){
 			const postComments =await  Comment.find({postId : id})
-	        res.status(200).json({response : "Success", count : postComments.length, data : postComments})
+	        res.status(200).json({response : "Success", count : postComments.length, postComments})
 		}else{
 			res.status(200).json({response : "Fail", message : "Post not found"})
 		}
@@ -24,7 +24,7 @@ const postCommentController = async(req, res)=>{
 		const foundPost = await Post.findOne({_id : id})
 		if(foundPost){
 			const newComment =await  Comment.create(req.body)
-	        res.status(200).json({response : "Success", data : newComment})
+	        res.status(200).json({response : "Success", newComment})
 		}else{
 			res.status(200).json({response : "Fail", message : "Post not found"})
 		}
@@ -34,17 +34,17 @@ const postCommentController = async(req, res)=>{
 }
 
 const updateCommentController = async(req, res)=>{
-	const {postId, posterId, userId, commentId} = req.params
+	const {postId, commentId} = req.params
 	try{
-		const foundPost = await Post.findOne({_id : postId, userId : posterId})
-		const foundComment = await Comment.findOne({_id : commentId, userId : userId})
+		const foundPost = await Post.findOne({_id : postId})
+		const foundComment = await Comment.findOne({_id : commentId})
 		
 		if(foundPost && foundComment){
-			const updatedComment =await  Comment.findOneAndUpdate({_id : commentId, postId : postId, userId : userId},req.body,{
+			const updatedComment =await  Comment.findOneAndUpdate({_id : commentId, postId : postId},req.body,{
 				runValidators : true,
             	new : true
 			})
-	        res.status(200).json({response : "Success", data : updatedComment})
+	        res.status(200).json({response : "Success", updatedComment})
 		}else{
 			res.status(200).json({response : "Error", message : "Post not found"})
 		}
@@ -58,9 +58,9 @@ const deleteCommentController = async(req, res)=>{
 		const foundPost = await Post.findOne({_id : postId})
 		const foundComment = await Comment.findOne({_id : commentId})
 		
-		if(foundComment){
+		if(foundPost && foundComment){
 			const deletedComment = await  Comment.findOneAndDelete({_id : commentId, postId : postId})
-	        res.status(200).json({response : "Success", data : deletedComment})
+	        res.status(200).json({response : "Success", deletedComment})
 		}else{
 			res.status(200).json({response : "Fail", message : "Post not found"})
 		}
