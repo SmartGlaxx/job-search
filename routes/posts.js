@@ -12,7 +12,7 @@ router.get('/:id/:userId/:username', getPostController)
 //CREATE A POST
 router.post('/', postPostController)
 //SHARE A POST
-router.post('/:postId/:posterId/:sharerId/:sharerUsername', sharePostController)
+router.post('/:postId/:posterId', sharePostController)
 //UPDATE A POST
 router.patch('/:id', updatePostController)
 //DELETE A POST
