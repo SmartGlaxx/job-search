@@ -1,5 +1,6 @@
 const router = require('express').Router()
-const {getUsers, getUser, updateUser, deleteUser, followUser, unfollowUser} = require('../controllers/user')
+const {getUsers, getUser, updateUser, deleteUser, followUser, unfollowUser, connectRequest, acceptConnectRequest, 
+	declineConnectRequest, disconnectRequest} = require('../controllers/user')
 
 //get users (for development)
 router.route('/').get(getUsers)
@@ -14,6 +15,13 @@ router.route('/delete/:id/:username').delete(deleteUser)
 router.route('/follow/:id/:username').patch(followUser)
 //UNFOLLOW A USER
 router.route('/unfollow/:id/:username').patch(unfollowUser)
-
+//SEND / CANCEL CONNECTION REQUEST TO A USER
+router.route('/connectrequest/:id/:username').patch(connectRequest)
+//ACCEPT CONNECTION REQUEST TO A USER
+router.route('/acceptconnectrequest/:id/:username').patch(acceptConnectRequest)
+//DECLINE CONNECTION REQUEST TO A USER
+router.route('/declineConnectRequest/:id/:username').patch(acceptConnectRequest)
+//SEND UNCONNECTION REQUEST TO A USER
+router.route('/disconnectrequest/:id/:username').patch(disconnectRequest)
 
 module.exports = router
