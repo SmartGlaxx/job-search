@@ -33,6 +33,14 @@ const userSchema = mongoose.Schema({
         type : Array,
         default : []
     },
+    connections :{
+        type : Array,
+        default : []
+    },
+    connectionRequests:{
+        type : Array,
+        default : []
+    },
     isAdmin : {
         type : Boolean,
         default : false
