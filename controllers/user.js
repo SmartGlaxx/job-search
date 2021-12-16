@@ -182,15 +182,16 @@ const acceptConnectRequest = async(req,res)=>{
             }else{
                 const fop = user.connections
                 
-                  if(!user.connections.includes(userId)){
-                res.status(200).json({currentUser: fop, data : user})     
+                  if(user.connections.includes(req.body.userId)){
+                  
 //                     await user.updateOne({$push : {connections : req.body.userId}})
 //                     await currentUser.updateOne({$push : {connections : req.params.id}})
 //                     await user.updateOne({$pull : {connectionRequests : req.body.userId}})
 //                     await currentUser.updateOne({$pull : {connectionRequests : req.params.id}})
 //                     res.status(200).json({response : "Success",  data : currentUser})
                 }else{
-                    return res.status(200).json({response : "Fail", message : 'You are already connected to this user'})
+                    res.status(200).json({currentUser: fop, data : user})   
+                    //return res.status(200).json({response : "Fail", message : 'You are already connected to this user'})
                 }
 
              }
