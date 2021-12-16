@@ -127,4 +127,131 @@ const unfollowUser = async(req,res)=>{
 }
 
 
-module.exports = {getUsers, getUser, updateUser, deleteUser, followUser, unfollowUser}
+//MAKE / CANCELL CONNECTION REQUEST
+const connectRequest = async(req,res)=>{
+    const {id, username} = req.params
+    const {userId, username : userUsername} = req.body
+    try{
+        if(userId === id){
+            return res.status(200).json({response : "Fail", message : 'Action not allowed'})
+        }else{
+            const user = await User.findOne({_id : id, username : username})
+            const currentUser = await User.findOne({_id : userId, username : userUsername})
+            
+            if(!user || !currentUser){
+                return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
+            }else{
+
+                if(!user.connections.includes(req.body.userId)){
+                    if(!user.connectionRequests.includes(req.body.userId)){
+                        await user.updateOne({$push : {connectionRequests : req.body.userId}})
+                        await currentUser.updateOne({$push : {connectionRequests : req.params.id}})
+                        res.status(200).json({response : "Success",  data : currentUser})
+                    }else if(user.connectionRequests.includes(req.body.userId)){
+                        await user.updateOne({$pull : {connectionRequests : req.body.userId}})
+                        await currentUser.updateOne({$pull : {connectionRequests : req.params.id}})
+                        res.status(200).json({response : "Success",  data : currentUser})
+                    }
+                }else{
+                    return res.status(200).json({response : "Fail", message : 'You are already connected to this user'})
+                }
+
+
+
+            }
+        }
+    }catch(error){
+        return res.status(200).json({response : "Fail", message : 'An error occured'})
+    }
+}
+
+//ACCEPT CONNECTION REQUEST
+const acceptConnectRequest = async(req,res)=>{
+    const {id, username} = req.params
+    const {userId, username : userUsername} = req.body
+    try{
+        if(userId === id){
+            return res.status(200).json({response : "Fail", message : 'Action not allowed'})
+        }else{
+            const user = await User.findOne({_id : id, username : username})
+            const currentUser = await User.findOne({_id : userId, username : userUsername})
+            
+            if(!user || !currentUser){
+                return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
+            }else{
+                if(!user.connections.includes(req.body.userId)){
+                    await user.updateOne({$push : {connections : req.body.userId}})
+                    await currentUser.updateOne({$push : {connections : req.params.id}})
+                    await user.updateOne({$pull : {connectionRequests : req.body.userId}})
+                    await currentUser.updateOne({$pull : {connectionRequests : req.params.id}})
+                    res.status(200).json({response : "Success",  data : currentUser})
+                }else{
+                    return res.status(200).json({response : "Fail", message : 'You are already connected to this user'})
+                }
+
+            }
+        }
+    }catch(error){
+        return res.status(200).json({response : "Fail", message : 'An error occured'})
+    }
+}
+
+//DECLINE CONNECTION REQUEST
+const declineConnectRequest = async(req,res)=>{
+    const {id, username} = req.params
+    const {userId, username : userUsername} = req.body
+    try{
+        if(userId === id){
+            return res.status(200).json({response : "Fail", message : 'Action not allowed'})
+        }else{
+            const user = await User.findOne({_id : id, username : username})
+            const currentUser = await User.findOne({_id : userId, username : userUsername})
+            
+            if(!user || !currentUser){
+                return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
+            }else{
+                if(user.connectionRequests.includes(req.body.userId)){
+                    await user.updateOne({$pull : {connectionRequests : req.body.userId}})
+                    await currentUser.updateOne({$pull : {connectionRequests : req.params.id}})
+                    res.status(200).json({response : "Success",  data : currentUser})
+                }else{
+                    return res.status(200).json({response : "Fail", message : 'You are already connected to this user'})
+                }
+
+            }
+        }
+    }catch(error){
+        return res.status(200).json({response : "Fail", message : 'An error occured'})
+    }
+}
+
+//DISCONNECTION REQUEST
+const disconnectRequest = async(req,res)=>{
+    const {id, username} = req.params
+    const {userId, username : userUsername} = req.body
+    try{
+        if(userId === id){
+            return res.status(200).json({response : "Fail", message : 'Action not allowed'})
+        }else{
+            const user = await User.findOne({_id : id, username : username})
+            const currentUser = await User.findOne({_id : userId, username : userUsername})
+            
+            if(!user || !currentUser){
+                return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
+            }else{
+                if(user.connections.includes(req.body.userId)){
+                    await user.updateOne({$pull : {connections : req.body.userId}})
+                    await currentUser.updateOne({$pull : {connections : req.params.id}})
+                    res.status(200).json({response : "Success",  data : currentUser})
+                }else{
+                    return res.status(200).json({response : "Fail", message : 'You are not connected to this user'})
+                }
+
+            }
+        }
+    }catch(error){
+        return res.status(200).json({response : "Fail", message : 'An error occured'})
+    }
+}
+
+module.exports = {getUsers, getUser, updateUser, deleteUser, followUser, unfollowUser, connectRequest, acceptConnectRequest, declineConnectRequest, disconnectRequest}
