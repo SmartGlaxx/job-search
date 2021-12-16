@@ -180,16 +180,16 @@ const acceptConnectRequest = async(req,res)=>{
             if(!user || !currentUser){
                 return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
             }else{
-                res.status(200).json({currentUser: 'if else'})
-//                 if(!user.connections.includes(req.body.userId)){
+                 if(!user.connections.includes(req.body.userId)){
+                     res.status(200).json({currentUser: 'if final'})
 //                     await user.updateOne({$push : {connections : req.body.userId}})
 //                     await currentUser.updateOne({$push : {connections : req.params.id}})
 //                     await user.updateOne({$pull : {connectionRequests : req.body.userId}})
 //                     await currentUser.updateOne({$pull : {connectionRequests : req.params.id}})
 //                     res.status(200).json({response : "Success",  data : currentUser})
-//                 }else{
-//                     return res.status(200).json({response : "Fail", message : 'You are already connected to this user'})
-//                 }
+                }else{
+                    return res.status(200).json({response : "Fail", message : 'You are already connected to this user'})
+                }
 
              }
         }
