@@ -173,10 +173,10 @@ const acceptConnectRequest = async(req,res)=>{
         if(userId === id){
             return res.status(200).json({response : "Fail", message : 'Action not allowed'})
         }else{
-            res.status(200).json('Hee oow')
-//             const user = await User.findOne({_id : id, username : username})
-//             const currentUser = await User.findOne({_id : userId, username : userUsername})
-            
+           
+`            const user = await User.findOne({_id : id, username : username})
+             const currentUser = await User.findOne({_id : userId, username : userUsername})
+             res.status(200).json({user, currentUser})
 //             if(!user || !currentUser){
 //                 return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
 //             }else{
