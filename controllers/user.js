@@ -181,7 +181,7 @@ const acceptConnectRequest = async(req,res)=>{
                 return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
             }else{
                 const fop = user.connections
-                res.status(200).json({currentUser: fop})
+                res.status(200).json({currentUser: fop, data : user})
 //                  if(!user.connections.includes(req.body.userId)){
                      
 //                     await user.updateOne({$push : {connections : req.body.userId}})
