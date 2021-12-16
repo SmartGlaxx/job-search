@@ -176,7 +176,7 @@ const acceptConnectRequest = async(req,res)=>{
            
 `            const user = await User.findOne({_id : id, username : username})
              const currentUser = await User.findOne({_id : userId, username : userUsername})
-             res.status(200).json({user, currentUser})
+             res.status(200).json({user : user, currentUser : currentUser})
 //             if(!user || !currentUser){
 //                 return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
 //             }else{
