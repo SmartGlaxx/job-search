@@ -174,7 +174,7 @@ const acceptConnectRequest = async(req,res)=>{
             return res.status(200).json({response : "Fail", message : 'Action not allowed'})
         }else{
            
-`            const user = await User.findOne({_id : id, username : username})
+             const user = await User.findOne({_id : id, username : username})
              const currentUser = await User.findOne({_id : userId, username : userUsername})
              res.status(200).json({user : user, currentUser : currentUser})
 //             if(!user || !currentUser){
