@@ -20,7 +20,7 @@ router.route('/connectrequest/:id/:username').patch(connectRequest)
 //ACCEPT CONNECTION REQUEST TO A USER
 router.route('/acceptconnectrequest/:id/:username').patch(acceptConnectRequest)
 //DECLINE CONNECTION REQUEST TO A USER
-router.route('/declineConnectRequest/:id/:username').patch(declineConnectRequest)
+router.route('/declineconnectrequest/:id/:username').patch(declineConnectRequest)
 //SEND DISCONNECTION REQUEST TO A USER
 router.route('/disconnectrequest/:id/:username').patch(disconnectRequest)
 
