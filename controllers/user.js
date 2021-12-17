@@ -136,13 +136,12 @@ const connectRequest = async(req,res)=>{
         if(userId === id){
             return res.status(200).json({response : "Fail", message : 'Action not allowed'})
         }else{
-            res.status(200).json({ ans : "ANSWER lev 1"})
-//             const user = await User.findOne({_id : id, username : username})
-//             const currentUser = await User.findOne({_id : userId, username : userUsername})
+            const user = await User.findOne({_id : id, username : username})
+            const currentUser = await User.findOne({_id : userId, username : userUsername})
             
-//             if(!user || !currentUser){
-//                 return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
-//             }else{
+            if(!user || !currentUser){
+                return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
+            }else{
 
 //                 if(!user.connections.includes(req.body.userId)){
 //                     if(!user.receivedConnectionRequests.includes(req.body.userId) && !currentUser.sentConnectionRequests.includes(req.body.id)){
@@ -160,7 +159,7 @@ const connectRequest = async(req,res)=>{
 
 
 
-//             }
+            }
         }
     }catch(error){
         return res.status(200).json({response : "Fail", message : 'An error occured'})
