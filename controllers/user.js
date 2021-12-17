@@ -144,7 +144,6 @@ const connectRequest = async(req,res)=>{
             }else{
                 if(!user.connections.includes(req.body.userId)){
                     if(!user.receivedConnectionRequests.includes(req.body.userId) && !currentUser.sentConnectionRequests.includes(req.body.id)){
-                        res.status(200).json({ ans : "ANSWER lev 4"})
                         await user.updateOne({$push : {receivedConnectionRequests : req.body.userId}})
                         await currentUser.updateOne({$push : {sentConnectionRequests : req.params.id}})
                         res.status(200).json({response : "Success",  data : currentUser})
