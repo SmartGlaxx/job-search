@@ -142,7 +142,7 @@ const connectRequest = async(req,res)=>{
             if(!user || !currentUser){
                 return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
             }else{
-
+                    res.status(200).json({ ans : "ANSWER lev 2"})
 //                 if(!user.connections.includes(req.body.userId)){
 //                     if(!user.receivedConnectionRequests.includes(req.body.userId) && !currentUser.sentConnectionRequests.includes(req.body.id)){
 //                         await user.updateOne({$push : {receivedConnectionRequests : req.body.userId}})
