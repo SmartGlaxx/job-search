@@ -37,7 +37,11 @@ const userSchema = mongoose.Schema({
         type : Array,
         default : []
     },
-    connectionRequests:{
+    sentConnectionRequests:{
+        type : Array,
+        default : []
+    },
+    receivedConnectionRequests:{
         type : Array,
         default : []
     },
