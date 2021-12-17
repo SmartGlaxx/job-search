@@ -164,7 +164,7 @@ const connectRequest = async(req,res)=>{
 //     }catch(error){
 //         return res.status(200).json({response : "Fail", message : 'An error occured'})
 //     }
-    res.status(200).json("ANSWER")
+    res.status(200).json({ ans : "ANSWER"})
 }
 
 //ACCEPT CONNECTION REQUEST
