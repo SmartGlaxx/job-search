@@ -148,10 +148,9 @@ const connectRequest = async(req,res)=>{
                         await currentUser.updateOne({$push : {sentConnectionRequests : req.params.id}})
                         res.status(200).json({response : "Success",  data : currentUser})
                     }else{
-                        res.status(200).json({ ans : "ANSWER lev 5"})
-//                         await user.updateOne({$pull : {receivedConnectionRequests : req.body.userId}})
-//                         await currentUser.updateOne({$pull : {sentConnectionRequests : req.params.id}})
-//                         res.status(200).json({response : "Success",  data : currentUser})
+                        await user.updateOne({$pull : {receivedConnectionRequests : req.body.userId}})
+                        await currentUser.updateOne({$pull : {sentConnectionRequests : req.params.id}})
+                        res.status(200).json({response : "Success",  data : currentUser})
                     }
                 }else{
                     return res.status(200).json({response : "Fail", message : 'You are already connected to this user'})
