@@ -132,10 +132,11 @@ const unfollowUser = async(req,res)=>{
 const connectRequest = async(req,res)=>{
     const {id, username} = req.params
     const {userId, username : userUsername} = req.body
-//     try{
-//         if(userId === id){
-//             return res.status(200).json({response : "Fail", message : 'Action not allowed'})
-//         }else{
+    try{
+        if(userId === id){
+            return res.status(200).json({response : "Fail", message : 'Action not allowed'})
+        }else{
+            res.status(200).json({ ans : "ANSWER lev 1"})
 //             const user = await User.findOne({_id : id, username : username})
 //             const currentUser = await User.findOne({_id : userId, username : userUsername})
             
@@ -160,11 +161,11 @@ const connectRequest = async(req,res)=>{
 
 
 //             }
-//         }
-//     }catch(error){
-//         return res.status(200).json({response : "Fail", message : 'An error occured'})
-//     }
-    res.status(200).json({ ans : "ANSWER"})
+        }
+    }catch(error){
+        return res.status(200).json({response : "Fail", message : 'An error occured'})
+    }
+    
 }
 
 //ACCEPT CONNECTION REQUEST
