@@ -142,8 +142,8 @@ const connectRequest = async(req,res)=>{
             if(!user || !currentUser){
                 return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
             }else{
-                    res.status(200).json({ ans : "ANSWER lev 2"})
-//                 if(!user.connections.includes(req.body.userId)){
+                if(!user.connections.includes(req.body.userId)){
+                           res.status(200).json({ ans : "ANSWER lev 3"})
 //                     if(!user.receivedConnectionRequests.includes(req.body.userId) && !currentUser.sentConnectionRequests.includes(req.body.id)){
 //                         await user.updateOne({$push : {receivedConnectionRequests : req.body.userId}})
 //                         await currentUser.updateOne({$push : {sentConnectionRequests : req.params.id}})
@@ -153,9 +153,9 @@ const connectRequest = async(req,res)=>{
 //                         await currentUser.updateOne({$pull : {sentConnectionRequests : req.params.id}})
 //                         res.status(200).json({response : "Success",  data : currentUser})
 //                     }
-//                 }else{
-//                     return res.status(200).json({response : "Fail", message : 'You are already connected to this user'})
-//                 }
+                }else{
+                    return res.status(200).json({response : "Fail", message : 'You are already connected to this user'})
+                }
 
 
 
