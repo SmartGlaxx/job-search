@@ -143,16 +143,17 @@ const connectRequest = async(req,res)=>{
                 return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
             }else{
                 if(!user.connections.includes(req.body.userId)){
-                           res.status(200).json({ ans : "ANSWER lev 3"})
-//                     if(!user.receivedConnectionRequests.includes(req.body.userId) && !currentUser.sentConnectionRequests.includes(req.body.id)){
+                    if(!user.receivedConnectionRequests.includes(req.body.userId) && !currentUser.sentConnectionRequests.includes(req.body.id)){
+                        res.status(200).json({ ans : "ANSWER lev 4"})
 //                         await user.updateOne({$push : {receivedConnectionRequests : req.body.userId}})
 //                         await currentUser.updateOne({$push : {sentConnectionRequests : req.params.id}})
 //                         res.status(200).json({response : "Success",  data : currentUser})
-//                     }else if(user.receivedConnectionRequests.includes(req.body.userId) && currentUser.sentConnectionRequests.includes(req.body.id)){
+                    }else if(user.receivedConnectionRequests.includes(req.body.userId) && currentUser.sentConnectionRequests.includes(req.body.id)){
+                        res.status(200).json({ ans : "ANSWER lev 5"})
 //                         await user.updateOne({$pull : {receivedConnectionRequests : req.body.userId}})
 //                         await currentUser.updateOne({$pull : {sentConnectionRequests : req.params.id}})
 //                         res.status(200).json({response : "Success",  data : currentUser})
-//                     }
+                    }
                 }else{
                     return res.status(200).json({response : "Fail", message : 'You are already connected to this user'})
                 }
