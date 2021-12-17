@@ -88,7 +88,7 @@ const followUser = async(req, res)=>{
                     await currentUser.updateOne({$push : {followings : req.params.id}})
                     res.status(200).json({response : "Success",  data : currentUser})
                 }else{
-                    return res.status(200).json({response : "Fail", message : 'You already follow this user"'})
+                    return res.status(200).json({response : "Fail", message : 'You already follow this user'})
                 }
 
             }
@@ -113,8 +113,8 @@ const unfollowUser = async(req,res)=>{
             }else{
                 if(user.followers.includes(req.body.userId)){
                     await user.updateOne({$pull : {followers : req.body.userId}})
-                    await currentUser.updateOne({$pull : {followings : req.params.id}})
-                    return res.status(200).json({response : "Success", data : currentUser})
+                    const newCurrentUser = await currentUser.updateOne({$pull : {followings : req.params.id}})
+                    return res.status(200).json({response : "Success", data : newCurrentUser})
                 }else{
                     return res.status(200).json({message : 'You do not follow this user'})
                 }
@@ -127,6 +127,7 @@ const unfollowUser = async(req,res)=>{
 }
 
 
+//new addition Connections
 //MAKE / CANCELL CONNECTION REQUEST
 const connectRequest = async(req,res)=>{
     const {id, username} = req.params
@@ -143,13 +144,13 @@ const connectRequest = async(req,res)=>{
             }else{
 
                 if(!user.connections.includes(req.body.userId)){
-                    if(!user.connectionRequests.includes(req.body.userId)){
-                        await user.updateOne({$push : {connectionRequests : req.body.userId}})
-                        await currentUser.updateOne({$push : {connectionRequests : req.params.id}})
+                    if(!user.receivedConnectionRequests.includes(req.body.userId) && !currentUser.sentConnectionRequests.includes(req.body.id)){
+                        await user.updateOne({$push : {receivedConnectionRequests : req.body.userId}})
+                        await currentUser.updateOne({$push : {sentConnectionRequests : req.params.id}})
                         res.status(200).json({response : "Success",  data : currentUser})
-                    }else if(user.connectionRequests.includes(req.body.userId)){
-                        await user.updateOne({$pull : {connectionRequests : req.body.userId}})
-                        await currentUser.updateOne({$pull : {connectionRequests : req.params.id}})
+                    }else if(user.receivedConnectionRequests.includes(req.body.userId) && currentUser.sentConnectionRequests.includes(req.body.id)){
+                        await user.updateOne({$pull : {receivedConnectionRequests : req.body.userId}})
+                        await currentUser.updateOne({$pull : {sentConnectionRequests : req.params.id}})
                         res.status(200).json({response : "Success",  data : currentUser})
                     }
                 }else{
@@ -173,24 +174,23 @@ const acceptConnectRequest = async(req,res)=>{
         if(userId === id){
             return res.status(200).json({response : "Fail", message : 'Action not allowed'})
         }else{
-           
-             const user = await User.findOne({_id : id, username : username})
-             const currentUser = await User.findOne({_id : userId, username : userUsername})
-             
+            const user = await User.findOne({_id : id, username : username})
+            const currentUser = await User.findOne({_id : userId, username : userUsername})
+            
             if(!user || !currentUser){
                 return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
             }else{
-                  if(!user.connections.includes(req.body.userId)){
+                if(!user.connections.includes(req.body.userId)){
                     await user.updateOne({$push : {connections : req.body.userId}})
                     await currentUser.updateOne({$push : {connections : req.params.id}})
-                    await user.updateOne({$pull : {connectionRequests : req.body.userId}})
-                    await currentUser.updateOne({$pull : {connectionRequests : req.params.id}})
+                    await user.updateOne({$pull : {sentConnectionRequests: req.body.userId}})
+                    await currentUser.updateOne({$pull : {receivedConnectionRequests : req.params.id}})
                     res.status(200).json({response : "Success",  data : currentUser})
                 }else{
                     return res.status(200).json({response : "Fail", message : 'You are already connected to this user'})
                 }
 
-             }
+            }
         }
     }catch(error){
         return res.status(200).json({response : "Fail", message : 'An error occured'})
@@ -211,14 +211,13 @@ const declineConnectRequest = async(req,res)=>{
             if(!user || !currentUser){
                 return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
             }else{
-                if(user.connectionRequests.includes(req.body.userId)){
-                    await user.updateOne({$pull : {connectionRequests : req.body.userId}})
-                    await currentUser.updateOne({$pull : {connectionRequests : req.params.id}})
+                if(user.sentConnectionRequests.includes(req.body.userId) && currentUser.receivedConnectionRequests.includes(req.params.id)){
+                     await user.updateOne({$pull : {sentConnectionRequests: req.body.userId}})
+                     await currentUser.updateOne({$pull : {receivedConnectionRequests : req.params.id}})
                     res.status(200).json({response : "Success",  data : currentUser})
                 }else{
-                    return res.status(200).json({response : "Fail", message : 'You are already connected to this user'})
+                    return res.status(200).json({response : "Fail", message : 'You are not connected to this user'})
                 }
-
             }
         }
     }catch(error){
