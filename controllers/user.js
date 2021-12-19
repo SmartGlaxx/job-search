@@ -1,3 +1,6 @@
+const path = require('path')
+const fs = require('fs')
+var cloudinary = require('cloudinary').v2
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
 
@@ -142,12 +145,13 @@ const connectRequest = async(req,res)=>{
             if(!user || !currentUser){
                 return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
             }else{
+
                 if(!user.connections.includes(req.body.userId)){
                     if(!user.receivedConnectionRequests.includes(req.body.userId) && !currentUser.sentConnectionRequests.includes(req.body.id)){
                         await user.updateOne({$push : {receivedConnectionRequests : req.body.userId}})
                         await currentUser.updateOne({$push : {sentConnectionRequests : req.params.id}})
                         res.status(200).json({response : "Success",  data : currentUser})
-                    }else{
+                    }else if(user.receivedConnectionRequests.includes(req.body.userId) && currentUser.sentConnectionRequests.includes(req.body.id)){
                         await user.updateOne({$pull : {receivedConnectionRequests : req.body.userId}})
                         await currentUser.updateOne({$pull : {sentConnectionRequests : req.params.id}})
                         res.status(200).json({response : "Success",  data : currentUser})
@@ -163,7 +167,6 @@ const connectRequest = async(req,res)=>{
     }catch(error){
         return res.status(200).json({response : "Fail", message : 'An error occured'})
     }
-    
 }
 
 //ACCEPT CONNECTION REQUEST
@@ -254,4 +257,80 @@ const disconnectRequest = async(req,res)=>{
     }
 }
 
-module.exports = {getUsers, getUser, updateUser, deleteUser, followUser, unfollowUser, connectRequest, acceptConnectRequest, declineConnectRequest, disconnectRequest}
+//UPLOAD PROFILE IMAGE
+const uploadImage = async(req,res)=>{
+    const {id, username} = req.params    
+    try{
+        const currentUser = await User.findOne({_id : id, username : username})
+        
+        if(!currentUser){
+            return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
+        }else{
+            if(!req.files){
+                return res.status(200).json({response : "Fail", message : 'Please select a picture'})
+            }else{
+               const profileImage = req.files.image
+               const maxSize = 10000 * 1024
+               if(!profileImage.mimetype.startsWith("image")){
+                    return res.status(200).json({response : "Fail", message : 'Please upload a picture'})
+               }
+               if(profileImage.size > maxSize){
+                return res.status(200).json({response : "Fail", message : `Picture size is higher than ${maxSize}. Plesae resize it`})
+               }
+               //UPLOAD TO LOCAL SERVER / HOSTING SERVER
+                // const profileImageName = profileImage.name.replace(/\s/g,'')
+                // const profileImagePath = path.join(__dirname, "../public/profileImages", profileImageName)
+                // await profileImage.mv(profileImagePath)
+                // res.status(200).json({image :{ src : `/profileImages/${profileImageName}`}})
+
+                //ULOAD TO CLOUDINARY
+                const result = await cloudinary.uploader.upload(
+                    req.files.image.tempFilePath,
+                    {
+                        use_filename : true,
+                        folder : "social-job-app-profile-img",
+                    }
+                )
+                fs.unlinkSync(req.files.image.tempFilePath)
+                return res.status(200).json({image :{ src : result.secure_url}})
+            }
+        }
+    }catch(error){
+        return res.status(200).json({response : "Fail", message : 'An error occured'})
+    }
+}
+
+//CREATE PROFILE IMAGE
+const createImage = async(req,res)=>{
+    const {id, username} = req.params
+    const {userId, username : userUsername} = req.body
+    try{
+        if(userId !== id){
+            return res.status(200).json({response : "Fail", message : 'Action not allowed'})
+        }else{
+            const currentUser = await User.findOne({_id : id, username : username})
+            
+           if(!currentUser){
+                return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
+            }else{
+                 const userUpdate = await User.findOneAndUpdate({_id : id}, req.body, {
+                    runValidators : true,
+                    new : true
+                })
+                
+                res.status(200).json({response : "Success", message : userUpdate})
+            }
+        }
+    }catch(error){
+        return res.status(200).json({response : "Fail", message : 'An error occured'})
+    }
+}
+
+module.exports = {getUsers, getUser, updateUser, deleteUser, followUser, unfollowUser, connectRequest, 
+    acceptConnectRequest, declineConnectRequest, disconnectRequest, uploadImage, createImage}
+
+
+
+
+
+     
