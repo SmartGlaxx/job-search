@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const {getUsers, getUser, updateUser, deleteUser, followUser, unfollowUser, connectRequest, acceptConnectRequest, 
-	declineConnectRequest, disconnectRequest, uploadImage, createImage} = require('../controllers/user')
+	declineConnectRequest, disconnectRequest, uploadProfileImage, uploadCoverImage,
+	 createImage} = require('../controllers/user')
 
 //get users (for development)
 router.route('/').get(getUsers)
@@ -24,7 +25,9 @@ router.route('/declineconnectrequest/:id/:username').patch(declineConnectRequest
 //SEND DISCONNECTION REQUEST TO A USER
 router.route('/disconnectrequest/:id/:username').patch(disconnectRequest)
 //UPLOAD PROFILE IMAGE
-router.route('/uploadprofileimage/:id/:username').post(uploadImage)
+router.route('/uploadcoverimage/:id/:username').post(uploadCoverImage)
+//UPLOAD PROFILE IMAGE
+router.route('/uploadprofileimage/:id/:username').post(uploadProfileImage)
 //CREATE PROFILE IMAGE
 router.route('/createprofileimage/:id/:username').patch(createImage)
 

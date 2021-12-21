@@ -51,7 +51,7 @@ const getPostController = async(req, res)=>{
 
 //CREATE POST
 const postPostController = async(req, res)=>{
-    const {userId, username : userUsername} = req.body
+     const {userId, username : userUsername} = req.body
    
     try{
         const newPost =await  Post.create(req.body)

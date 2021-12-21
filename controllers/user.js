@@ -257,8 +257,51 @@ const disconnectRequest = async(req,res)=>{
     }
 }
 
+//UPLOAD COVER IMAGE
+const uploadCoverImage = async(req,res)=>{
+    const {id, username} = req.params    
+    try{
+        const currentUser = await User.findOne({_id : id, username : username})
+        
+        if(!currentUser){
+            return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
+        }else{
+            if(!req.files){
+                return res.status(200).json({response : "Fail", message : 'Please select a picture'})
+            }else{
+               const coverImage = req.files.image
+               const maxSize = 10000 * 1024
+               if(!coverImage.mimetype.startsWith("image")){
+                    return res.status(200).json({response : "Fail", message : 'Please upload a picture'})
+               }
+               if(coverImage.size > maxSize){
+                return res.status(200).json({response : "Fail", message : `Picture size is higher than ${maxSize}. Plesae resize it`})
+               }
+               //UPLOAD TO LOCAL SERVER / HOSTING SERVER
+                // const profileImageName = profileImage.name.replace(/\s/g,'')
+                // const profileImagePath = path.join(__dirname, "../public/profileImages", profileImageName)
+                // await profileImage.mv(profileImagePath)
+                // res.status(200).json({image :{ src : `/profileImages/${profileImageName}`}})
+
+                //ULOAD TO CLOUDINARY
+                const result = await cloudinary.uploader.upload(
+                    req.files.image.tempFilePath,
+                    {
+                        use_filename : true,
+                        folder : "social-job-app-cover-img",
+                    }
+                )
+                fs.unlinkSync(req.files.image.tempFilePath)
+                return res.status(200).json({image :{ src : result.secure_url}})
+            }
+        }
+    }catch(error){
+        return res.status(200).json({response : "Fail", message : 'An error occured'})
+    }
+}
+
 //UPLOAD PROFILE IMAGE
-const uploadImage = async(req,res)=>{
+const uploadProfileImage = async(req,res)=>{
     const {id, username} = req.params    
     try{
         const currentUser = await User.findOne({_id : id, username : username})
@@ -327,7 +370,8 @@ const createImage = async(req,res)=>{
 }
 
 module.exports = {getUsers, getUser, updateUser, deleteUser, followUser, unfollowUser, connectRequest, 
-    acceptConnectRequest, declineConnectRequest, disconnectRequest, uploadImage, createImage}
+    acceptConnectRequest, declineConnectRequest, disconnectRequest, uploadCoverImage, uploadProfileImage, 
+    createImage}
 
 
 
