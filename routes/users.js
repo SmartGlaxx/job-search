@@ -29,6 +29,6 @@ router.route('/uploadcoverimage/:id/:username').post(uploadCoverImage)
 //UPLOAD PROFILE IMAGE
 router.route('/uploadprofileimage/:id/:username').post(uploadProfileImage)
 //CREATE PROFILE IMAGE
-router.route('/createprofileimage/:id/:username').patch(createImage)
+router.route('/createimage/:id/:username').patch(createImage)
 
 module.exports = router
