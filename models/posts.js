@@ -13,10 +13,13 @@ const postSchema = mongoose.Schema({
         type : String,
         max : 500
     },
+    img : {
+        type : String,
+    },
     sharedId : String,
     sharedUsername : String,
     sharedDescription : String,
-    img : {
+    shareImg : {
         type : String,
     },
     likes : {
