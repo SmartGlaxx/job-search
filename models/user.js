@@ -47,6 +47,18 @@ const userSchema = mongoose.Schema({
         type : Array,
         default : []
     },
+    sentMessages : {
+        type : Array,
+        default : []
+    },
+    receivedUnreadMessages :{
+        type : Array,
+        default : []
+    },
+    receivedReadMessages :{
+        type : Array,
+        default : []
+    },
     isAdmin : {
         type : Boolean,
         default : false
@@ -66,6 +78,14 @@ const userSchema = mongoose.Schema({
     employment:{
         type : String,
         enum : [1,2,3]
+    },
+    unreadMessages :{
+        type : Array,
+        default : []
+    },
+    readMessages :{
+        type : Array,
+        default : []
     }
 },
 {timestamps : true}
