@@ -1,3 +1,5 @@
+const fs = require('fs')
+var cloudinary = require('cloudinary').v2
 const Message = require('../models/message')
 const User = require('../models/user')
 
@@ -98,6 +100,59 @@ const postMessageController = async(req, res)=>{
 }
 
 
+
+
+//UPLOAD MESSAGE IMAGE
+const uploadMessageImage = async(req,res)=>{
+    const {id, username} = req.params    
+    try{
+        const currentUser = await User.findOne({_id : id, username : username})
+        
+        if(!currentUser){
+            return res.status(200).json({response : "Fail", message : 'User not found. Please try again'})
+        }else{
+            if(!req.files){
+                return res.status(200).json({response : "Fail", message : 'Please select a picture'})
+            }else{
+               const messageImage = req.files.image
+               const maxSize = 10000 * 1024
+               if(!messageImage.mimetype.startsWith("image")){
+                    return res.status(200).json({response : "Fail", message : 'Please upload a picture'})
+               }
+               if(messageImage.size > maxSize){
+                return res.status(200).json({response : "Fail", message : `Picture size is higher than ${maxSize}. Plesae resize it`})
+               }
+               //UPLOAD TO LOCAL SERVER / HOSTING SERVER
+                // const postImageName = postImage.name.replace(/\s/g,'')
+                // const postImagePath = path.join(__dirname, "../public/postImages", postImageName)
+                // await postImage.mv(postImagePath)
+                // res.status(200).json({image :{ src : `/postImages/${postImageName}`}})
+
+                //ULOAD TO CLOUDINARY
+
+                const result = await cloudinary.uploader.upload(
+                    req.files.image.tempFilePath,
+                    {
+                        use_filename : true,
+                        folder : "social-job-app-message-img",
+                    }
+                )
+                
+                fs.unlinkSync(req.files.image.tempFilePath)
+                return res.status(200).json({image :{ src : result.secure_url}})
+            }
+        }
+    }catch(error){
+        return res.status(200).json({response : "Fail", message : 'An error occured'})
+    }
+}
+
+
+
+
+
+
+//READ MESSAGE 
 const readMessageController = async(req, res)=>{
 	const {id, userId, username} = req.params
 	
@@ -118,6 +173,7 @@ const readMessageController = async(req, res)=>{
 }
 
 
+//DELETE SENT MESSAGE
 const deleteSentMessageController = async(req, res)=>{
 
 	const {id} = req.params
@@ -137,6 +193,7 @@ const deleteSentMessageController = async(req, res)=>{
     }  
 }
 
+//DELETE RECEIVED MESSAGE
 const deleteReceivedMessageController = async(req, res)=>{
 	const {id} = req.params
 	const {userId, username} = req.body
@@ -159,5 +216,5 @@ const deleteReceivedMessageController = async(req, res)=>{
 
 
 module.exports = {getAllMessagesController, getUserMessagesController, getMessageController, 
-	postMessageController, readMessageController, deleteSentMessageController, 
+	postMessageController, uploadMessageImage, readMessageController, deleteSentMessageController, 
 	deleteReceivedMessageController}
