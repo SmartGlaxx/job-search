@@ -9,7 +9,7 @@ router.get('/', getAllMessagesController)
 //GET ALLUSER MESSAGES
 router.get('/:id/:username', getUserMessagesController)
 //GET ALL MESSAGES FROM USER
-router.get('/:userId/:userUsername/:id/', getAllMessagesFromUserController)
+router.get('/chat/:userId/:userUsername/:id/', getAllMessagesFromUserController)
 //GET A MESSAGE
 // router.get('/:id', getMessageController)
 //CREATE A MESSAGE
