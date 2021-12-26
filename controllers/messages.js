@@ -42,6 +42,42 @@ const getUserMessagesController = async(req, res)=>{
 	}
 }
 
+//GET ALL MESSAGES FROM ANOTHER USER
+const getAllMessagesFromUserController = async(req, res)=>{
+	const {userId, userUsername, id, username} = req.params
+	// const {userId, username} = req.body
+	try{
+		const user = await User.findOne({_id : id, username : username})
+		const currentUser = await User.findOne({_id : userId, username : userUsername})
+		const allMessages = []
+
+		const foundUserSentMessage =  currentUser.sentMessages.map(item =>{
+			if(item.senderId == userId && item.receiverId == id){
+				return item
+			}
+			return item
+		})
+
+		const foundUserReceivedUnreadMessage =  currentUser.receivedUnreadMessages.map(item =>{
+			if(item.senderId == id && item.receiverId == userId){
+				return item
+			}
+			return item
+		})
+		const foundReceivedReadMessage =  currentUser.receivedReadMessages.map(item =>{
+			if(item.senderId == id && item.receiverId == userId){
+				return item
+			}
+			return item
+		})
+		const allUserMessages = foundUserSentMessage.concat(foundUserReceivedUnreadMessage, foundReceivedReadMessage)
+		
+		return res.status(200).json({response : "Success", count : allUserMessages.length, allUserMessages})
+		
+	}catch(error){
+		res.status(200).json({response : "Fail", message : "An error occured fetching message"})
+	}
+}
 
 //GET A MESSAGE
 const getMessageController = async(req, res)=>{
@@ -215,6 +251,6 @@ const deleteReceivedMessageController = async(req, res)=>{
 
 
 
-module.exports = {getAllMessagesController, getUserMessagesController, getMessageController, 
-	postMessageController, uploadMessageImage, readMessageController, deleteSentMessageController, 
-	deleteReceivedMessageController}
+module.exports = {getAllMessagesController, getUserMessagesController, getAllMessagesFromUserController,
+	getMessageController, postMessageController, uploadMessageImage, readMessageController,
+	 deleteSentMessageController, deleteReceivedMessageController}
