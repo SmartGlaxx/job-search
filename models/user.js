@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 
 const userSchema = mongoose.Schema({
+    firstname : String,
+    lastname : String,
     username : {
         type : String,
         required : true,
@@ -45,6 +47,14 @@ const userSchema = mongoose.Schema({
         type : Array,
         default : []
     },
+    sentMessages : {
+        type : Array,
+        default : []
+    },
+    receivedMessages :{
+        type : Array,
+        default : []
+    },
     isAdmin : {
         type : Boolean,
         default : false
@@ -64,6 +74,14 @@ const userSchema = mongoose.Schema({
     employment:{
         type : String,
         enum : [1,2,3]
+    },
+    unreadMessages :{
+        type : Array,
+        default : []
+    },
+    readMessages :{
+        type : Array,
+        default : []
     }
 },
 {timestamps : true}
