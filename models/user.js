@@ -51,11 +51,7 @@ const userSchema = mongoose.Schema({
         type : Array,
         default : []
     },
-    receivedUnreadMessages :{
-        type : Array,
-        default : []
-    },
-    receivedReadMessages :{
+    receivedMessages :{
         type : Array,
         default : []
     },
