@@ -12,8 +12,8 @@ router.get('/:id/:username', getUserMessagesController)
 router.get('/chat/:userId/:userUsername/:id/', getAllMessagesFromUserController)
 //GET A MESSAGE
 // router.get('/:id', getMessageController)
-//CREATE A MESSAGE
-router.post('/:id/:username', postMessageController)
+//CREATE A MESSAGE 
+router.post('/:id/:username', postMessageController) 
 //UPLOAD AN IMAGE
 router.post('/uploadmessageimage/:id/:username', uploadMessageImage)
 //READ A MESSAGE

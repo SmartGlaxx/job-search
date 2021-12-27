@@ -53,22 +53,22 @@ const getAllMessagesFromUserController = async(req, res)=>{
 		const foundUserSentMessage =  currentUser.sentMessages.map(item =>{
 			if(item.senderId == userId && item.receiverId == id){
 				return item
+			}else{
+				return 
 			}
-			return item
+			return 
 		})
 
 		const foundReceivedMessages =  currentUser.receivedMessages.map(item =>{
 			if(item.senderId == id && item.receiverId == userId){
 				return item
+			}else{
+				return 
 			}
-			return item
+			return 
+			
 		})
-		// const foundReceivedReadMessage =  currentUser.receivedReadMessages.map(item =>{
-		// 	if(item.senderId == id && item.receiverId == userId){
-		// 		return item
-		// 	}
-		// 	return item
-		// })
+		
 		const allUserMessages = foundUserSentMessage.concat(foundReceivedMessages)
 		
 		return res.status(200).json({response : "Success", count : allUserMessages.length, allUserMessages})
