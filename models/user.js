@@ -74,14 +74,6 @@ const userSchema = mongoose.Schema({
     employment:{
         type : String,
         enum : [1,2,3]
-    },
-    unreadMessages :{
-        type : Array,
-        default : []
-    },
-    readMessages :{
-        type : Array,
-        default : []
     }
 },
 {timestamps : true}
