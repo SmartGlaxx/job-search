@@ -192,7 +192,7 @@ const shareMessageController = async(req, res)=>{
     const user = await User.findOne({_id : otherUserId, username : otherUserUsername})
 	const currentUser = await User.findOne({_id : userId, username : userUsername})
 	const allMessages = []
-console.log(id, userId, userUsername, otherUserId, otherUserUsername)
+
     try{
         // const foundMessages = await Message.findOne({_id : msgId, senderId : msgerId, senderUsername : msgerUsername})
         //const foundPost = await Post.findOne({_id : postId, userId : posterId, sharerId : sharerId, sharerUsername : sharerUsername })
@@ -224,14 +224,13 @@ console.log(id, userId, userUsername, otherUserId, otherUserUsername)
 			const formatedMessage = {_id : newMessage._id, ...newMessage} //add _id property to message before pushing to users
 			const senderMessage = await currentUser.updateOne({$push : {sentMessages : formatedMessage}})
 			const receiverMessage = await user.updateOne({$push : {receivedMessages : formatedMessage}})
-			console.log(formatedMessage, senderMessage)
-			res.status(200).json({response : "Success", foundUserSentMessage})
+			res.status(200).json({response : "Success", senderMessage})
         }else if(foundReceivedMessages){
         	const newMessage = await  Message.create(req.body)//the new message
 			const formatedMessage = {_id : newMessage._id, ...newMessage} //add _id property to message before pushing to users
 			const senderMessage = await currentUser.updateOne({$push : {receivedMessages : formatedMessage}})
 			const receiverMessage = await user.updateOne({$push : {sentMessages : formatedMessage}})
-			res.status(200).json({response : "Success", foundUserSentMessage})
+			res.status(200).json({response : "Success", senderMessage})
         }
         else{
             res.status(200).json({response : "Fail", message : "Post not found"})
