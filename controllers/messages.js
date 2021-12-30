@@ -53,22 +53,22 @@ const getAllMessagesFromUserController = async(req, res)=>{
 		const foundUserSentMessage =  currentUser.sentMessages.map(item =>{
 			if(item.senderId == userId && item.receiverId == id){
 				return item
+			}else{
+				return 
 			}
-			return item
+			return 
 		})
 
 		const foundReceivedMessages =  currentUser.receivedMessages.map(item =>{
 			if(item.senderId == id && item.receiverId == userId){
 				return item
+			}else{
+				return 
 			}
-			return item
+			return 
+			
 		})
-		// const foundReceivedReadMessage =  currentUser.receivedReadMessages.map(item =>{
-		// 	if(item.senderId == id && item.receiverId == userId){
-		// 		return item
-		// 	}
-		// 	return item
-		// })
+		
 		const allUserMessages = foundUserSentMessage.concat(foundReceivedMessages)
 		
 		return res.status(200).json({response : "Success", count : allUserMessages.length, allUserMessages})
@@ -185,6 +185,63 @@ const uploadMessageImage = async(req,res)=>{
 
 
 
+//CREATE SHARE MESSAGE
+const shareMessageController = async(req, res)=>{
+    const {id, userId, userUsername, otherUserId, otherUserUsername} = req.params
+   
+    const user = await User.findOne({_id : otherUserId, username : otherUserUsername})
+	const currentUser = await User.findOne({_id : userId, username : userUsername})
+	const allMessages = []
+
+    try{
+        // const foundMessages = await Message.findOne({_id : msgId, senderId : msgerId, senderUsername : msgerUsername})
+        //const foundPost = await Post.findOne({_id : postId, userId : posterId, sharerId : sharerId, sharerUsername : sharerUsername })
+        
+        const foundUserSentMessage =  currentUser.sentMessages.find(item =>{
+			if(item._id == id && item.senderId == userId && item.receiverId == otherUserId){
+				// res.status(200).json({response : "Success", item})
+				return item
+			}else{
+				return 
+			}
+			return
+		})
+
+		const foundReceivedMessages =  currentUser.receivedMessages.find(item =>{
+			if(item._id == id && item.receiverId == userId && item.senderId == otherUserId){
+				return item
+			}else{
+				return 
+			}
+			return 
+		})
+
+
+
+        if(foundUserSentMessage){
+
+            const newMessage = await  Message.create(req.body)//the new message
+			const formatedMessage = {_id : newMessage._id, ...newMessage} //add _id property to message before pushing to users
+			const senderMessage = await currentUser.updateOne({$push : {sentMessages : formatedMessage}})
+			const receiverMessage = await user.updateOne({$push : {receivedMessages : formatedMessage}})
+			res.status(200).json({response : "Success", senderMessage})
+        }else if(foundReceivedMessages){
+        	const newMessage = await  Message.create(req.body)//the new message
+			const formatedMessage = {_id : newMessage._id, ...newMessage} //add _id property to message before pushing to users
+			const senderMessage = await currentUser.updateOne({$push : {receivedMessages : formatedMessage}})
+			const receiverMessage = await user.updateOne({$push : {sentMessages : formatedMessage}})
+			res.status(200).json({response : "Success", senderMessage})
+        }
+        else{
+            res.status(200).json({response : "Fail", message : "Post not found"})
+        }
+    }catch(error){
+         res.status(200).json({response : "Fail", message : "An error occured creating post"})
+    } 
+}
+
+
+
 
 
 //READ MESSAGE 
@@ -251,5 +308,5 @@ const deleteReceivedMessageController = async(req, res)=>{
 
 
 module.exports = {getAllMessagesController, getUserMessagesController, getAllMessagesFromUserController,
-	postMessageController, uploadMessageImage,
+	postMessageController, uploadMessageImage, shareMessageController,
 	 deleteSentMessageController, deleteReceivedMessageController}
