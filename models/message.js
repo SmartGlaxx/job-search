@@ -24,12 +24,12 @@ const MessageSchema = new mongoose.Schema({
 	img : {
 		type : String
 	},
-	sharedId : String,
-    sharedUsername : String,
-    sharedMessage : String,
-    shareImg : {
-        type : String,
-    },
+	repliedId : String,
+    	repliedUsername : String,
+    	repliedMessage : String,
+    	repliedImg : {
+           	type : String,
+    	},
 },{timestamps : true})
 
 module.exports = mongoose.model("Message", MessageSchema) 
