@@ -217,24 +217,23 @@ const replyMessageController = async(req, res)=>{
 		})
 
 
+	 // if(foundUserSentMessage){
 
-        if(foundUserSentMessage){
-
-            const newMessage = await  Message.create(req.body)//the new message
-			const formatedMessage = {_id : newMessage._id, ...newMessage} //add _id property to message before pushing to users
-			const senderMessage = await currentUser.updateOne({$push : {sentMessages : formatedMessage}})
-			const receiverMessage = await user.updateOne({$push : {receivedMessages : formatedMessage}})
-			res.status(200).json({response : "Success", senderMessage})
-        }else if(foundReceivedMessages){
+   //          const newMessage = await  Message.create(req.body)//the new message
+			// const formatedMessage = {_id : newMessage._id, ...newMessage} //add _id property to message before pushing to users
+			// const senderMessage = await currentUser.updateOne({$push : {sentMessages : formatedMessage}})
+			// const receiverMessage = await user.updateOne({$push : {receivedMessages : formatedMessage}})
+			// res.status(200).json({response : "Success", senderMessage})
+   //      // }else if(foundReceivedMessages){
         	const newMessage = await  Message.create(req.body)//the new message
 			const formatedMessage = {_id : newMessage._id, ...newMessage} //add _id property to message before pushing to users
 			const senderMessage = await currentUser.updateOne({$push : {receivedMessages : formatedMessage}})
 			const receiverMessage = await user.updateOne({$push : {sentMessages : formatedMessage}})
 			res.status(200).json({response : "Success", senderMessage})
-        }
-        else{
-            res.status(200).json({response : "Fail", message : "Post not found"})
-        }
+        // }
+        // else{
+        //     res.status(200).json({response : "Fail", message : "Post not found"})
+        // }
     }catch(error){
          res.status(200).json({response : "Fail", message : "An error occured creating post"})
     } 
