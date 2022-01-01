@@ -227,8 +227,8 @@ const replyMessageController = async(req, res)=>{
    //      // }else if(foundReceivedMessages){
         	const newMessage = await  Message.create(req.body)//the new message
 			const formatedMessage = {_id : newMessage._id, ...newMessage} //add _id property to message before pushing to users
-			const senderMessage = await currentUser.updateOne({$push : {receivedMessages : formatedMessage}})
-			const receiverMessage = await user.updateOne({$push : {sentMessages : formatedMessage}})
+			const senderMessage = await currentUser.updateOne({$push : {sentMessages : formatedMessage}})
+			const receiverMessage = await user.updateOne({$push : {receivedMessages : formatedMessage}})
 			res.status(200).json({response : "Success", senderMessage})
         // }
         // else{
