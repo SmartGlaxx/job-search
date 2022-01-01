@@ -186,7 +186,7 @@ const uploadMessageImage = async(req,res)=>{
 
 
 //CREATE SHARE MESSAGE
-const shareMessageController = async(req, res)=>{
+const replyMessageController = async(req, res)=>{
     const {id, userId, userUsername, otherUserId, otherUserUsername} = req.params
    
     const user = await User.findOne({_id : otherUserId, username : otherUserUsername})
@@ -308,5 +308,5 @@ const deleteReceivedMessageController = async(req, res)=>{
 
 
 module.exports = {getAllMessagesController, getUserMessagesController, getAllMessagesFromUserController,
-	postMessageController, uploadMessageImage, shareMessageController,
+	postMessageController, uploadMessageImage, replyMessageController,
 	 deleteSentMessageController, deleteReceivedMessageController}
