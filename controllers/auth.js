@@ -3,11 +3,13 @@ const bcrypt = require('bcrypt')
 
 //REGISTER
 const registerUser = async(req, res, next)=>{
+    const firstname = req.body.firstname.toLowerCase()
+    const lastname = req.body.lastname.toLowerCase()
     const username = req.body.username.toLowerCase()
     const email = req.body.email.toLowerCase()
     const password = req.body.password
 
-    if(username && email && password){
+    if(firstname && lastname && username && email && password){
        try{ 
             if(password.length < 8){
                 return res.status(200).json({response: "Fail", message : "Password cannot be less than 8 characters"})
@@ -19,16 +21,15 @@ const registerUser = async(req, res, next)=>{
                 if(checkUser.length > 0){
                     return res.status(200).json({response: "Fail", message : "Username or email is registred. Please sign-in"})
                 }else{
-                    const singupdData = await User.create({ username, email , password : hashedPasword })
+                    const singupdData = await User.create({ firstname, lastname, username, email , password : hashedPasword })
                     return res.status(200).json({response : "Success", singupdData})
                 }
-
             }
         }catch(error){
             res.status(200).json({response : "Fail", message : "An error occured. Please try again"})
         }
      }else{
-         res.status(200).json({response: "Fail", message : "Please enter your Username, E-mail and Password"})
+         res.status(200).json({response: "Fail", message : "Please enter your firstname, lastname, Username, E-mail and Password"})
     }
 }
 
