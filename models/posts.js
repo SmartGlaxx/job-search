@@ -26,6 +26,8 @@ const postSchema = mongoose.Schema({
     },
     sharedId : String,
     sharedUsername : String,
+    sharedFirstname : String,
+    sharedLastname : String,
     sharedDescription : String,
     shareImg : {
         type : String,
