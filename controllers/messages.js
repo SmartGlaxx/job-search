@@ -114,6 +114,26 @@ const getAllMessagesFromUserController = async(req, res)=>{
 // }
 
 //POST A MESSAGE
+// const postMessageController = async(req, res)=>{
+// 	const {id, username} = req.params
+// 	const {senderId, senderUsername} = req.body
+// 	try{
+// 		const user = await User.findOne({_id : id, username : username})
+// 		const currentUser = await User.findOne({_id : senderId, username : senderUsername})
+// 		if(user && currentUser){
+// 			const newMessage = await  Message.create(req.body)//the new message
+// 			const formatedMessage = {_id : newMessage._id, ...newMessage} //add _id property to message before pushing to users
+// 			const senderMessage = await currentUser.updateOne({$push : {sentMessages : formatedMessage}})
+// 			const receiverMessage = await user.updateOne({$push : {receivedMessages : formatedMessage}})
+// 	        res.status(200).json({response : "Success", formatedMessage})
+// 		}else{
+// 			res.status(200).json({response : "Fail", message : "Receiver or Sender not found"})
+// 		}
+//     }catch(error){
+//          res.status(200).json({response : "Fail", message : "An error occured creating Message"})
+//     } 
+// }
+
 const postMessageController = async(req, res)=>{
 	const {id, username} = req.params
 	const {senderId, senderUsername} = req.body
@@ -125,6 +145,10 @@ const postMessageController = async(req, res)=>{
 			const formatedMessage = {_id : newMessage._id, ...newMessage} //add _id property to message before pushing to users
 			const senderMessage = await currentUser.updateOne({$push : {sentMessages : formatedMessage}})
 			const receiverMessage = await user.updateOne({$push : {receivedMessages : formatedMessage}})
+	        //messageNotifications added
+	        if(!user.messageNotifications.includes(senderId)){
+	        	const receiverNotifications = await user.updateOne({$push : {messageNotifications : senderId}})
+	        }
 	        res.status(200).json({response : "Success", formatedMessage})
 		}else{
 			res.status(200).json({response : "Fail", message : "Receiver or Sender not found"})
