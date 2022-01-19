@@ -42,6 +42,7 @@ const getUserMessagesController = async(req, res)=>{
 }
 
 //GET ALL MESSAGES FROM ANOTHER USER
+
 const getAllMessagesFromUserController = async(req, res)=>{
 	const {userId, userUsername, id} = req.params
 	// const {userId, username} = req.body
@@ -70,13 +71,54 @@ const getAllMessagesFromUserController = async(req, res)=>{
 		})
 		
 		const allUserMessages = foundUserSentMessage.concat(foundReceivedMessages)
+
+		 if(currentUser.messageNotifications.includes(id)){
+	        	const receiverNotifications = await currentUser.updateOne({$pull : {messageNotifications : id}})
+	        }
 		
 		return res.status(200).json({response : "Success", count : allUserMessages.length, allUserMessages})
 		
 	}catch(error){
 		res.status(200).json({response : "Fail", message : "An error occured fetching message"})
-	}
+	} 
 }
+
+
+// const getAllMessagesFromUserController = async(req, res)=>{
+// 	const {userId, userUsername, id} = req.params
+// 	// const {userId, username} = req.body
+// 	try{
+// 		const user = await User.findOne({_id : id})
+// 		const currentUser = await User.findOne({_id : userId, username : userUsername})
+// 		const allMessages = []
+
+// 		const foundUserSentMessage =  currentUser.sentMessages.map(item =>{
+// 			if(item.senderId == userId && item.receiverId == id){
+// 				return item
+// 			}else{
+// 				return 
+// 			}
+// 			return 
+// 		})
+
+// 		const foundReceivedMessages =  currentUser.receivedMessages.map(item =>{
+// 			if(item.senderId == id && item.receiverId == userId){
+// 				return item
+// 			}else{
+// 				return 
+// 			}
+// 			return 
+			
+// 		})
+		
+// 		const allUserMessages = foundUserSentMessage.concat(foundReceivedMessages)
+		
+// 		return res.status(200).json({response : "Success", count : allUserMessages.length, allUserMessages})
+		
+// 	}catch(error){
+// 		res.status(200).json({response : "Fail", message : "An error occured fetching message"})
+// 	}
+// }
 
 //GET A MESSAGE
 // const getMessageController = async(req, res)=>{
