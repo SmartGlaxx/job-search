@@ -61,6 +61,10 @@ const userSchema = mongoose.Schema({
         type : Array,
         default : []
     },
+    messageNotifications :{
+        type : Array,
+        default : []
+    },
     isAdmin : {
         type : Boolean,
         default : false
