@@ -30,12 +30,12 @@ const getUserMessagesController = async(req, res)=>{
 		const foundReceivedMessages = user.receivedMessages
 		const allUserMessages = foundSentMessages.concat(foundReceivedMessages)
 		
-		
-		if(allUserMessages){
-	        res.status(200).json({response : "Success", count : allUserMessages.length, allUserMessages})
-		}else{
-			res.status(200).json({response : "Fail", message : "Messages not found"})
-		}
+		console.log('user' ,user, 'foundSentMessages',foundSentMessages, 'foundReceivedMessages',foundReceivedMessages)
+		// if(allUserMessages){
+	 //        res.status(200).json({response : "Success", count : allUserMessages.length, allUserMessages})
+		// }else{
+		// 	res.status(200).json({response : "Fail", message : "Messages not found"})
+		// }
 	}catch(error){
 		res.status(200).json({response : "Fail", message : "An error occured fetching messages"})
 	}
@@ -70,12 +70,16 @@ const getAllMessagesFromUserController = async(req, res)=>{
 		})
 		
 		const allUserMessages = foundUserSentMessage.concat(foundReceivedMessages)
+
+		 if(currentUser.messageNotifications.includes(id)){
+	        	const receiverNotifications = await currentUser.updateOne({$pull : {messageNotifications : id}})
+	        }
 		
 		return res.status(200).json({response : "Success", count : allUserMessages.length, allUserMessages})
 		
 	}catch(error){
 		res.status(200).json({response : "Fail", message : "An error occured fetching message"})
-	}
+	} 
 }
 
 //GET A MESSAGE
@@ -125,6 +129,10 @@ const postMessageController = async(req, res)=>{
 			const formatedMessage = {_id : newMessage._id, ...newMessage} //add _id property to message before pushing to users
 			const senderMessage = await currentUser.updateOne({$push : {sentMessages : formatedMessage}})
 			const receiverMessage = await user.updateOne({$push : {receivedMessages : formatedMessage}})
+	        //messageNotifications added
+	        if(!user.messageNotifications.includes(senderId)){
+	        	const receiverNotifications = await user.updateOne({$push : {messageNotifications : senderId}})
+	        }
 	        res.status(200).json({response : "Success", formatedMessage})
 		}else{
 			res.status(200).json({response : "Fail", message : "Receiver or Sender not found"})
@@ -133,8 +141,8 @@ const postMessageController = async(req, res)=>{
          res.status(200).json({response : "Fail", message : "An error occured creating Message"})
     } 
 }
-
-
+ 
+ 
 
 
 //UPLOAD MESSAGE IMAGE
@@ -185,7 +193,7 @@ const uploadMessageImage = async(req,res)=>{
 
 
 
-//CREATE SHARE MESSAGE
+//REPLY MESSAGE
 const replyMessageController = async(req, res)=>{
     const {id, userId, userUsername, otherUserId, otherUserUsername} = req.params
    
@@ -229,6 +237,10 @@ const replyMessageController = async(req, res)=>{
 			const formatedMessage = {_id : newMessage._id, ...newMessage} //add _id property to message before pushing to users
 			const senderMessage = await currentUser.updateOne({$push : {sentMessages : formatedMessage}})
 			const receiverMessage = await user.updateOne({$push : {receivedMessages : formatedMessage}})
+			if(!user.messageNotifications.includes(userId)){
+	        	const receiverNotifications = await user.updateOne({$push : {messageNotifications : userId}})
+	        }
+
 			res.status(200).json({response : "Success", senderMessage})
         // }
         // else{
@@ -303,6 +315,31 @@ const deleteReceivedMessageController = async(req, res)=>{
     }  
 }
 
+//READ MESSAGE AND REMOVE NOTIFICATION FROM USER
+//messageNotifications added
+
+
+// const readMessageController = async(req, res)=>{
+// 	const {senderId, senderUsername} = req.params
+// 	const {receiverId, receiverUsername} = req.body
+// 	try{
+// 		const user = await User.findOne({_id : id, username : username})
+// 		const currentUser = await User.findOne({_id : senderId, username : senderUsername})
+// 		if(user && currentUser){
+// 			const newMessage = await  Message.create(req.body)//the new message
+// 			const formatedMessage = {_id : newMessage._id, ...newMessage} //add _id property to message before pushing to users
+// 			const senderMessage = await currentUser.updateOne({$push : {sentMessages : formatedMessage}})
+// 			const receiverMessage = await user.updateOne({$push : {receivedMessages : formatedMessage}})
+// 	        //messageNotifications added
+// 	        const receiverNotifications = await user.updateOne({$push : {messageNotifications : senderId}})
+// 	        res.status(200).json({response : "Success", formatedMessage})
+// 		}else{
+// 			res.status(200).json({response : "Fail", message : "Receiver or Sender not found"})
+// 		}
+//     }catch(error){
+//          res.status(200).json({response : "Fail", message : "An error occured creating Message"})
+//     } 
+// }
 
 
 
