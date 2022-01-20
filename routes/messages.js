@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const {getAllMessagesController, getUserMessagesController, getAllMessagesFromUserController,
 	 postMessageController, uploadMessageImage, replyMessageController,
-	 deleteSentMessageController, deleteReceivedMessageController} = require('../controllers/messages')
+	 deleteSentMessageController, deleteReceivedMessageController, readMessageController} = require('../controllers/messages')
 
 
 //GET ALL MESSAGES for Development
@@ -18,6 +18,8 @@ router.post('/:id/:username', postMessageController)
 router.post('/uploadmessageimage/:id/:username', uploadMessageImage)
 // SHARE A MESSAGE
 router.post('/reply/:id/:userId/:userUsername/:otherUserId/:otherUserUsername', replyMessageController)
+//READ A MESSAGE
+router.patch('/chat/:userId/:userUsername/:id/', readMessageController)
 //DELETE A SENT MESSAGE
 router.delete('/deletesent/:id', deleteSentMessageController)
 //DELETE A RECEIVED MESSAGE
