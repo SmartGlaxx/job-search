@@ -428,8 +428,28 @@ const deleteReceivedMessageController = async(req, res)=>{
 }
 
 
+const readMessageController = async(req, res)=>{
+	const {userId, userUsername, id } = req.params
+	try{
+		const user = await User.findOne({_id : id})
+		const currentUser = await User.findOne({_id : userId, username : userUsername})
+		if(user && currentUser){
+			if(currentUser.messageNotifications.includes(id)){
+	        	const receiverNotifications = await currentUser.updateOne({$pull : {messageNotifications : id}})
+	        	res.status(200).json({response : "Success", receiverNotifications})
+	        }else{
+	        	res.status(200).json({response : "NoAction"})
+	        }
+		}else{
+			res.status(200).json({response : "Fail", message : "Receiver or Sender not found"})
+		}
+    }catch(error){
+         res.status(200).json({response : "Fail", message : "An error occured creating Message"})
+    } 
+}
+
 
 
 module.exports = {getAllMessagesController, getUserMessagesController, getAllMessagesFromUserController,
 	postMessageController, uploadMessageImage, replyMessageController,
-	 deleteSentMessageController, deleteReceivedMessageController}
+	 deleteSentMessageController, deleteReceivedMessageController, readMessageController}
