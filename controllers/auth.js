@@ -58,7 +58,7 @@ const loginUser = async(req, res)=>{
         }
         
         }catch(error){
-            res.status(200).json({response: "Fail", message : "User or Username not found. Please try again"})
+            res.status(200).json({response: "Fail", message : "Username or email not found. Please try again"})
         }
     }else{
          res.status(200).json({response: "Fail", message : "Please enter your E-mail / Username and Password"})
