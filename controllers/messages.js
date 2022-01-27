@@ -182,11 +182,48 @@ const postMessageController = async(req, res)=>{
 	try{
 		const user = await User.findOne({_id : id, username : username})
 		const currentUser = await User.findOne({_id : senderId, username : senderUsername})
+		
+	        // add update inbox on new message
+		const userData = {
+			_id : user._id,
+			userName : user.username,
+			firstname : user.firstname,
+			lastname : user.lastname,
+			profilePicture : user.profilePicture
+		}
+		const currentUserData = {
+			_id : currentUser._id,
+			userName : currentUser.username,
+			firstname : currentUser.firstname,
+			lastname : currentUser.lastname,
+			profilePicture : currentUser.profilePicture
+		}
+		
 		if(user && currentUser){
 			const newMessage = await  Message.create(req.body)//the new message
 			const formatedMessage = {_id : newMessage._id, ...newMessage} //add _id property to message before pushing to users
 			const senderMessage = await currentUser.updateOne({$push : {sentMessages : formatedMessage}})
 			const receiverMessage = await user.updateOne({$push : {receivedMessages : formatedMessage}})
+			
+			
+			//add user to newMessageList
+			if(!user.newMessageList.includes(senderId)){
+				await user.updateOne({$push : {newMessageList : senderId}})
+			}else if(user.newMessageList.includes(senderId)){
+				await user.updateOne({$pull : {newMessageList : senderId}})
+				await user.updateOne({$push : {newMessageList : senderId}})
+			}
+			
+			if(!currentUser.newMessageList.includes(id)){
+				await currentUser.updateOne({$push : {newMessageList : id}})
+			}else if(currentUser.newMessageList.includes(id)){
+				await currentUser.updateOne({$pull : {newMessageList : id}})
+				await currentUser.updateOne({$push : {newMessageList : id}})
+			}
+
+			
+			
+			
 	        //messageNotifications added
 	        if(!user.messageNotifications.includes(senderId)){
 	        	const receiverNotifications = await user.updateOne({$push : {messageNotifications : senderId}})
