@@ -208,17 +208,17 @@ const postMessageController = async(req, res)=>{
 			
 			//add user to newMessageList
 			if(!user.newMessageList.includes(senderId)){
-				await user.updateOne({$push : {newMessageList : senderId}})
+				await user.updateOne({$unshift : {newMessageList : senderId}})
 			}else if(user.newMessageList.includes(senderId)){
 				await user.updateOne({$pull : {newMessageList : senderId}})
-				await user.updateOne({$push : {newMessageList : senderId}})
+				await user.updateOne({$unshift : {newMessageList : senderId}})
 			}
 			
 			if(!currentUser.newMessageList.includes(id)){
-				await currentUser.updateOne({$push : {newMessageList : id}})
+				await currentUser.updateOne({$unshift : {newMessageList : id}})
 			}else if(currentUser.newMessageList.includes(id)){
 				await currentUser.updateOne({$pull : {newMessageList : id}})
-				await currentUser.updateOne({$push : {newMessageList : id}})
+				await currentUser.updateOne({$unshift : {newMessageList : id}})
 			}
 
 			
