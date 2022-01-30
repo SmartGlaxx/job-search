@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const userSchema = mongoose.Schema({
-     firstname : {
+    firstname : {
         type : String,
         required : true,
     },
@@ -32,6 +32,10 @@ const userSchema = mongoose.Schema({
     coverPicture : {
         type : String,
         default : "",
+    },
+    phone:{
+        type : String,
+        max : 50
     },
     followers : {
         type : Array,
@@ -69,11 +73,15 @@ const userSchema = mongoose.Schema({
         type : Array,
         default : []
     },
-    isAdmin : {
-        type : Boolean,
-        default : false
-    },
     description:{
+        type : String,
+        max : 50
+    },
+    country:{
+        type : String,
+        max : 50
+    },
+    state:{
         type : String,
         max : 50
     },
@@ -81,13 +89,8 @@ const userSchema = mongoose.Schema({
         type : String,
         max : 50
     },
-    from:{
-        type : String,
-        max : 50
-    },
     employment:{
-        type : String,
-        enum : [1,2,3]
+        type : String
     }
 },
 {timestamps : true}
