@@ -73,7 +73,7 @@ const userSchema = mongoose.Schema({
         type : Array,
         default : []
     },
-    description:{
+    aboutMe:{
         type : String,
         max : 50
     },
