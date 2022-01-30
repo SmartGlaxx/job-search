@@ -26,15 +26,52 @@ const getUser = async(req,res)=>{
 }
 
 //UPDATE
+// const updateUser = async(req, res)=>{
+//     const {id, username} = req.params
+//     if(req.body.userId === req.params.id ||  req.body.isAdmin){
+//         try{ 
+//             if(req.body.password){
+//                 const salt = await bcrypt.genSalt(10)
+//                 req.body.password = await bcrypt.hash(req.body.password, salt)
+//             }
+//             const userData = await User.findOne({_id : id, username : username})
+//             if(!userData){
+//                 return res.status(200).json({response : "Fail", message : 'User with given id or username not found'})
+//             }
+//             const userUpdate = await User.findOneAndUpdate({_id : id}, req.body, {
+//                 runValidators : true,
+//                 new : true
+//             })
+//             res.status(200).json({response : "Success", message : userUpdate})
+//         }catch(error){
+//             res.status(200).json({response : "Fail", message: "An error occured updating your account"})
+//         }
+//     }else{
+//         return res.status(200).json({response : "Fail", message : 'Action not allowed'})
+//     }
+// }
+
 const updateUser = async(req, res)=>{
     const {id, username} = req.params
-    if(req.body.userId === req.params.id ||  req.body.isAdmin){
+    const {password, newpassword} = req.body
+    if(req.body.userId === req.params.id){
         try{ 
-            if(req.body.password){
-                const salt = await bcrypt.genSalt(10)
-                req.body.password = await bcrypt.hash(req.body.password, salt)
+            if(password){
+                const userSearch = await User.findOne({_id : id, username : username})
+                if(!userSearch){
+                    return res.status(200).json({response : "Fail", message : 'User with given id or username not found'})
+                }
+                const storedPassword = userSearch.password 
+                const checkedPassword = await bcrypt.compare(password, storedPassword)
+                if(!checkedPassword){
+                    return res.status(200).json({response : "Fail", message : "Password Incorrect"})
+                }else{
+                    const salt = await bcrypt.genSalt(10)
+                    req.body.password = await bcrypt.hash(newpassword, salt)
+                }
             }
             const userData = await User.findOne({_id : id, username : username})
+           
             if(!userData){
                 return res.status(200).json({response : "Fail", message : 'User with given id or username not found'})
             }
