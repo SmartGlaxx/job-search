@@ -53,21 +53,20 @@ const getUser = async(req,res)=>{
 
 const updateUser = async(req, res)=>{
     const {id, username} = req.params
-    const {password, newpassword} = req.body
     if(req.body.userId === req.params.id){
         try{ 
-            if(password){
+            if(req.body.password){
                 const userSearch = await User.findOne({_id : id, username : username})
                 if(!userSearch){
                     return res.status(200).json({response : "Fail", message : 'User with given id or username not found'})
                 }
                 const storedPassword = userSearch.password 
-                const checkedPassword = await bcrypt.compare(password, storedPassword)
+                const checkedPassword = await bcrypt.compare(req.body.password, storedPassword)
                 if(!checkedPassword){
                     return res.status(200).json({response : "Fail", message : "Password Incorrect"})
                 }else{
                     const salt = await bcrypt.genSalt(10)
-                    req.body.password = await bcrypt.hash(newpassword, salt)
+                    req.body.password = await bcrypt.hash(req.body.newpassword, salt)
                 }
             }
             const userData = await User.findOne({_id : id, username : username})
