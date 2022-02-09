@@ -1,10 +1,10 @@
 const router = require('express').Router()
-const {registerUser, verifyEmail, loginUser} = require('../controllers/auth')
+const {registerUser, loginUser} = require('../controllers/auth')
 
 
 router.post('/register', registerUser)
 
-router.patch('/verifyemail/:id/:username', verifyEmail)
+// router.patch('/verifyemail/:id/:username', verifyEmail)
 
 router.post('/login', loginUser)
 
