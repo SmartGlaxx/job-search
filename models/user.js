@@ -20,6 +20,10 @@ const userSchema = mongoose.Schema({
         required : true,
         max : 70,
     },
+    emailVerified : {
+        type : Boolean,
+        default : false
+    },
     password : {
         type : String,
         required : true,
