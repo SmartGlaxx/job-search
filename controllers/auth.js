@@ -1,6 +1,5 @@
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
-const nodemailer = require("nodemailer");
 
 //REGISTER
 const registerUser = async(req, res, next)=>{
@@ -9,55 +8,6 @@ const registerUser = async(req, res, next)=>{
     const username = req.body.username.toLowerCase()
     const email = req.body.email.toLowerCase()
     const password = req.body.password
-
-// async..await is not allowed in global scope, must use a wrapper
-async function main(userId, email, username, firstname, lastname) {
-  // create reusable transporter object using the default SMTP transport
-  let transporter = nodemailer.createTransport({
-    service: "gmail",
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: process.env.EMAIL, // generated ethereal user
-      pass: process.env.EMAILPASSWORD, // generated ethereal password
-    },
-  });
-
-let mailOption = { 
-    from: "mailsmartconnect@gmail.com", // sender address
-    to: email, // list of receivers
-    subject: "Hello ✔", // Subject line
-    text: "Hello world?",
-    html : `<h2 style='background:#8899aa; color : #fff; padding : 1rem'>Smart Connect</h2>
-    <div style="font-size: 1rem">
-    <h3 style="color: #8899aa" >Hello, <span style="color : #446; text-transform: capitalize">${firstname} ${lastname}</span></h3>
-    <p style="color: #446">Welcome to <span style="color:#243eb3; font-weight: 600">Smart Connect. </span><br/>
-    Click the button below to verify your email.</p>
-    <br/>
-    <a href="http://smartconnect.cyou/verify-email/${userId}/${username}" style="color: #f3f3ff ; text-decoration:none">
-        <button style="color: #f3f3ff ; width : 10rem; height: 3rem; text-align: center; background : #243eb3; border : none; cursor: pointer">
-        Verify Email
-        </button>
-    </a>
-    </div>`,
-    // attachements : [
-    //     {filename : "nanmeOfFile.jpg" , path : "./pathToFile/nanmeOfFile.jpg"}
-    // ]
-}
-
-
-
-let info = await transporter.sendMail(mailOption, function(err, data){
-    if(err){ 
-        console.log(err)
-    }else{
-        console.log("sent...")
-    }
-})
-}
-
-
 
     if(firstname && lastname && username && email && password){
        try{ 
@@ -71,10 +21,8 @@ let info = await transporter.sendMail(mailOption, function(err, data){
                 if(checkUser.length > 0){
                     return res.status(200).json({response: "Fail", message : "Username or email is registred. Please sign-in"})
                 }else{
-                    const singupdData = await User.create({ firstname, lastname, username, email , password : hashedPasword })                    
-                    await res.status(200).json({response : "Success", singupdData})
-
-                    main(singupdData._id, email, username, firstname, lastname).catch(console.error);
+                    const singupdData = await User.create({ firstname, lastname, username, email , password : hashedPasword })
+                    return res.status(200).json({response : "Success", singupdData})
                 }
             }
         }catch(error){
@@ -85,17 +33,6 @@ let info = await transporter.sendMail(mailOption, function(err, data){
     }
 }
 
-const verifyEmail = async(req, res)=>{
-    const {id, username} = req.params
-
-    const currentUser = await User.findOne({_id : id, username : username})
-        if(!currentUser){
-            return res.status(200).json({response: "Fail", message : "User not found in our database. Please sign up"})      
-        }else{
-            const verifiedUser = await currentUser.updateOne({emailVerified : true })
-            res.status(200).json({response : "Success",  data : verifiedUser})
-        }
-}
 
 //LOGIN
 const loginUser = async(req, res)=>{
@@ -129,4 +66,4 @@ const loginUser = async(req, res)=>{
 }
 
 
-module.exports = {registerUser, verifyEmail, loginUser}
+module.exports = {registerUser, loginUser}
