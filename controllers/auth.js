@@ -20,7 +20,7 @@ async function main(userId, email, username, firstname, lastname) {
     secure: false, // true for 465, false for other ports
     auth: {
       user: process.env.EMAIL, // generated ethereal user
-      pass: process.env.PASSWORD, // generated ethereal password
+      pass: process.env.EMAILPASSWORD, // generated ethereal password
     },
   });
 
