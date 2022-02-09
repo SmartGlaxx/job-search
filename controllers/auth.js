@@ -85,6 +85,7 @@ let info = await transporter.sendMail(mailOption, function(err, data){
     }
 }
 
+// VERIFY EMAIL
 const verifyEmail = async(req, res)=>{
     const {id, username} = req.params
 
