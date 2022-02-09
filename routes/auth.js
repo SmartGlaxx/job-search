@@ -4,7 +4,7 @@ const {registerUser, verifyEmail, loginUser} = require('../controllers/auth')
 
 router.post('/register', registerUser)
 
-router.get('/verifyemail/:id/:username', verifyEmail)
+router.post('/verifyemail/:id/:username', verifyEmail)
 
 router.post('/login', loginUser)
 
